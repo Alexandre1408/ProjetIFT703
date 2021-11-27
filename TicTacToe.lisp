@@ -2,7 +2,9 @@
 (clear-all)
 
 (defun createRandomNumbers()
-	(setf coupBlockant (1+ (act-r-random 3))) ;1 si le coup doit être bloquant, 2 sinon
+	(setf coupBlockant (1+ (act-r-random 2))) ;1 si le coup doit être bloquant, 2 sinon
+	(setf coupGagnantLigne (1+ (act-r-random 3))) ; genere la position du coup gagnant en ligne
+	(setf coupGagnantCol (1+ (act-r-random 3))) ; genere la position du coup gagnant en colonne
 
 
 )
@@ -18,8 +20,7 @@
 	)
 (run-full-time 10) 
 )
-
-; triple ligne0  pos, 1  case1 , "E" case2 , "O" case3 , "X"  
+ 
 
 (define-model tictactoe
 
