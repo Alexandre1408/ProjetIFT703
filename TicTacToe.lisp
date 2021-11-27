@@ -1,38 +1,65 @@
 
 (clear-all)
 
+(defun createRandomNumbers()
+	(setf coupBlockant (1+ (act-r-random 3))) ;1 si le coup doit être bloquant, 2 sinon
+
+
+)
+
+
+(defun setGoal()
+	(goal-focus-fct (car (define-chunks-fct ; crée un nouveau chunk et le met dans le goal
+								 `((isa matrice ligne1, (car  (define-chunks-fct `(( isa triple pos, "1"  case1 , "E" case2 , "O" case3 , "X"))))
+									state, nil
+								  ))
+						 )
+				    )
+	)
+(run-full-time 10) 
+)
+
+; triple ligne0  pos, 1  case1 , "E" case2 , "O" case3 , "X"  
+
 (define-model tictactoe
 
-(chunk-type line pos case1 case2 case3)
-(chunk-type column pos case1 case2 case3)
-(chunk-type diagonal number case1 case2 case3)
-(chunk-type case numberLine numberCol inDiag1 inDiag2 value)
+(define-chunks 
 
-(chunk-type searchEmpty lineNumber colNumber)
-(chunk-type playMove bestLineNumber bestColNumber)
-
-(P test-empty
-   =goal>
-     ISA         searchEmpty
-	 lineNumber  =valueLine
-	 colNumber   =valueCol
-   =imaginal>
-     ISA         case
-     numberLine  =valueLine 
-     numberCol   =valueCol
-	 value 		 "E"
-==>
-   -goal>
-   +goal>
-	ISA		createMove
-	lineNumber =valueLine
-	colNumber =valueCol
+    (test isa chunk) 
 )
 
-(P try-recall-move
+(add-dm
+(111 ISA pattern case1 "E" case2 "E" case3 "E")
+
+(211 ISA pattern case1 "X" case2 "E" case3 "E")
+(121 ISA pattern case1 "E" case2 "X" case3 "E")
+(112 ISA pattern case1 "E" case2 "E" case3 "X")
+
+(221 ISA pattern case1 "X" case2 "X" case3 "E")
+(212 ISA pattern case1 "X" case2 "E" case3 "X")
+(122 ISA pattern case1 "E" case2 "X" case3 "X")
+
+(311 ISA pattern case1 "O" case2 "E" case3 "E")
+(131 ISA pattern case1 "E" case2 "O" case3 "E")
+(113 ISA pattern case1 "E" case2 "E" case3 "O")
+
+(331 ISA pattern case1 "O" case2 "O" case3 "E")
+(313 ISA pattern case1 "O" case2 "E" case3 "O")
+(133 ISA pattern case1 "E" case2 "O" case3 "O")
+
+(231 ISA pattern case1 "X" case2 "O" case3 "E")
+(321 ISA pattern case1 "O" case2 "X" case3 "E")
+(213 ISA pattern case1 "X" case2 "E" case3 "O")
+(312 ISA pattern case1 "O" case2 "E" case3 "X")
+(123 ISA pattern case1 "E" case2 "X" case3 "O")
+(132 ISA pattern case1 "E" case2 "O" case3 "X")
 )
 
-(P answer-good-move
-) 
+(chunk-type pattern id case1 case2 case3) 
+(chunk-type goal ligne1 ligne2 ligne3 col1 col2 col3 diag1 diag2 state currentLine currentCol) 
+(chunk-type learned-move ligne col diago1 diago2 x y) 
+(declare-buffer-usage goal line :all)
+
+
 
 )
