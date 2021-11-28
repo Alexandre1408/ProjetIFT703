@@ -28,13 +28,14 @@
 )
 
 (defun main()
-	(let ( (coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
-		   (coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
+	(let (	(typeCoup (+ 1 (act-r-random 2)))
+			(coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
+			(coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
 		 )
-
-	   (createWinBoard coupGagnantLigne coupGagnantCol)
-	   ;(format t "test 1 ~d ~%" coupBlockant)
-
+		(case typeCoup
+			(1 (createWinBoard coupGagnantLigne coupGagnantCol))
+			(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
+		)
 	)
 )
 
@@ -53,55 +54,55 @@
 		(case ligne
 			(1 (case x
 				(1 (case y
-					(1 (progn (setf (slot-value *plateau* 'case11) "E") (setf (slot-value *plateau* 'case12) "O") (setf (slot-value *plateau* 'case13) "O")))
-					(2 (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case12) "E") (setf (slot-value *plateau* 'case13) "O")))
-					(3 (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case12) "O") (setf (slot-value *plateau* 'case13) "E")))
+					(1 (progn (setf (slot-value *plateau* 'case11) "E") (setf (slot-value *plateau* 'case12) "O") (setf (slot-value *plateau* 'case13) "O") (fillCroixLigne 2 3)))
+					(2 (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case12) "E") (setf (slot-value *plateau* 'case13) "O") (fillCroixLigne 2 3)))
+					(3 (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case12) "O") (setf (slot-value *plateau* 'case13) "E") (fillCroixLigne 2 3)))
 					)
 				)
 				(2 (case y
-					(1 (progn (setf (slot-value *plateau* 'case21) "E") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case23) "O")))
-					(2 (progn (setf (slot-value *plateau* 'case21) "O") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case23) "O")))
-					(3 (progn (setf (slot-value *plateau* 'case21) "O") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case23) "E")))
+					(1 (progn (setf (slot-value *plateau* 'case21) "E") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case23) "O") (fillCroixLigne 1 3)))
+					(2 (progn (setf (slot-value *plateau* 'case21) "O") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case23) "O") (fillCroixLigne 1 3)))
+					(3 (progn (setf (slot-value *plateau* 'case21) "O") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case23) "E") (fillCroixLigne 1 3)))
 					)
 				)
 				(3 (case y
-					(1 (progn (setf (slot-value *plateau* 'case31) "E") (setf (slot-value *plateau* 'case32) "O") (setf (slot-value *plateau* 'case33) "O")))
-					(2 (progn (setf (slot-value *plateau* 'case31) "O") (setf (slot-value *plateau* 'case32) "E") (setf (slot-value *plateau* 'case33) "O")))
-					(3 (progn (setf (slot-value *plateau* 'case31) "O") (setf (slot-value *plateau* 'case32) "O") (setf (slot-value *plateau* 'case33) "E")))
+					(1 (progn (setf (slot-value *plateau* 'case31) "E") (setf (slot-value *plateau* 'case32) "O") (setf (slot-value *plateau* 'case33) "O") (fillCroixLigne 1 2)))
+					(2 (progn (setf (slot-value *plateau* 'case31) "O") (setf (slot-value *plateau* 'case32) "E") (setf (slot-value *plateau* 'case33) "O") (fillCroixLigne 1 2)))
+					(3 (progn (setf (slot-value *plateau* 'case31) "O") (setf (slot-value *plateau* 'case32) "O") (setf (slot-value *plateau* 'case33) "E") (fillCroixLigne 1 2)))
 					)
 				)
 				)
 			)
 			(2 (case y
 				(1 (case x
-					(1 (progn (setf (slot-value *plateau* 'case11) "E") (setf (slot-value *plateau* 'case21) "O") (setf (slot-value *plateau* 'case31) "O")))
-					(2 (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case21) "E") (setf (slot-value *plateau* 'case31) "O")))
-					(3 (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case21) "O") (setf (slot-value *plateau* 'case31) "E")))
+					(1 (progn (setf (slot-value *plateau* 'case11) "E") (setf (slot-value *plateau* 'case21) "O") (setf (slot-value *plateau* 'case31) "O") (fillCroixCol 2 3)))
+					(2 (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case21) "E") (setf (slot-value *plateau* 'case31) "O") (fillCroixCol 2 3)))
+					(3 (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case21) "O") (setf (slot-value *plateau* 'case31) "E") (fillCroixCol 2 3)))
 					)
 				)
 				(2 (case x
-					(1 (progn (setf (slot-value *plateau* 'case12) "E") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case32) "O")))
-					(2 (progn (setf (slot-value *plateau* 'case12) "O") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case32) "O")))
-					(3 (progn (setf (slot-value *plateau* 'case12) "O") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case32) "E")))
+					(1 (progn (setf (slot-value *plateau* 'case12) "E") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case32) "O") (fillCroixCol 1 3)))
+					(2 (progn (setf (slot-value *plateau* 'case12) "O") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case32) "O") (fillCroixCol 1 3)))
+					(3 (progn (setf (slot-value *plateau* 'case12) "O") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case32) "E") (fillCroixCol 1 3)))
 					)
 				)
 				(3 (case x
-					(1 (progn (setf (slot-value *plateau* 'case13) "E") (setf (slot-value *plateau* 'case23) "O") (setf (slot-value *plateau* 'case33) "O")))
-					(2 (progn (setf (slot-value *plateau* 'case13) "O") (setf (slot-value *plateau* 'case23) "E") (setf (slot-value *plateau* 'case33) "O")))
-					(3 (progn (setf (slot-value *plateau* 'case13) "O") (setf (slot-value *plateau* 'case23) "O") (setf (slot-value *plateau* 'case33) "E")))
+					(1 (progn (setf (slot-value *plateau* 'case13) "E") (setf (slot-value *plateau* 'case23) "O") (setf (slot-value *plateau* 'case33) "O") (fillCroixCol 1 2)))
+					(2 (progn (setf (slot-value *plateau* 'case13) "O") (setf (slot-value *plateau* 'case23) "E") (setf (slot-value *plateau* 'case33) "O") (fillCroixCol 1 2)))
+					(3 (progn (setf (slot-value *plateau* 'case13) "O") (setf (slot-value *plateau* 'case23) "O") (setf (slot-value *plateau* 'case33) "E") (fillCroixCol 1 2)))
 					)
 				)
 				)
 			)
 			(3 (progn
-				(if (and (eql x 1) (eql y 1)) (progn (setf (slot-value *plateau* 'case11) "E") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case33) "O")))
-				(if (and (eql x 2) (eql y 2)) (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case33) "O")))
-				(if (and (eql x 3) (eql y 3)) (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case33) "E")))
-				(if (and (eql x 3) (eql y 1)) (progn (setf (slot-value *plateau* 'case31) "E") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case13) "O")))
-				(if (and (eql x 1) (eql y 3)) (progn (setf (slot-value *plateau* 'case31) "O") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case13) "E")))
+				(if (and (eql x 1) (eql y 1)) (progn (setf (slot-value *plateau* 'case11) "E") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case33) "O") (fillCroixDiag 1)))
+				(if (and (eql x 2) (eql y 2)) (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case33) "O") (fillCroixDiag 1)))
+				(if (and (eql x 3) (eql y 3)) (progn (setf (slot-value *plateau* 'case11) "O") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case33) "E") (fillCroixDiag 1)))
+				(if (and (eql x 3) (eql y 1)) (progn (setf (slot-value *plateau* 'case31) "E") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case13) "O") (fillCroixDiag 2)))
+				(if (and (eql x 1) (eql y 3)) (progn (setf (slot-value *plateau* 'case31) "O") (setf (slot-value *plateau* 'case22) "O") (setf (slot-value *plateau* 'case13) "E") (fillCroixDiag 2)))
 				)
 			)
-			(4 (progn (setf (slot-value *plateau* 'case31) "O") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case13) "O")))
+			(4 (progn (setf (slot-value *plateau* 'case31) "O") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case13) "O")  (fillCroixDiag 2)))
 		)
 		
 		(drawplateau)
@@ -196,11 +197,6 @@
 		  (setf posCoupLig1 (1+ (act-r-random 3))) 
 	   )
 	   
-	   (format t "x ~d ~%" posCoupLig1)
-	   (format t "y ~d ~%" posCoupLig2)
-	   (format t "ligne ~d ~%" ligneNb1)
-	   (format t "ligne ~d ~%" ligneNb2)
-	   
 	   (case ligneNb1
 			(1 (case posCoupLig1
 				(1 (setf (slot-value *plateau* 'case11) "O"))
@@ -262,11 +258,6 @@
 		  (setf posCoupCol1 (1+ (act-r-random 3))) 
 	   )
 	   
-	   (format t "x ~d ~%" posCoupCol1)
-	   (format t "y ~d ~%" posCoupCol2)
-	   (format t "col ~d ~%" colNb1)
-	   (format t "col ~d ~%" colNb2)
-	   
 	   (case colNb1
 			(1 (case posCoupCol1
 				(1 (setf (slot-value *plateau* 'case11) "O"))
@@ -322,9 +313,6 @@
 		(while (eql posCoupDiag1 posCoupDiag2)
 			(setf posCoupDiag1 (1+ (act-r-random 6))) 
 		)
-		
-	   (format t "case ~d ~%" posCoupDiag1)
-	   (format t "case ~d ~%" posCoupDiag2)
 	   
 		(case diagNb
 			(1 (case posCoupDiag1
@@ -372,11 +360,6 @@
    (let ( (posCoupLig1 (1+ (act-r-random 3)))  
 		  (posCoupLig2 (1+ (act-r-random 3))) 
 		)
-	   
-	   (format t "x ~d ~%" posCoupLig1)
-	   (format t "y ~d ~%" posCoupLig2)
-	   (format t "ligne ~d ~%" ligneNb1)
-	   (format t "ligne ~d ~%" ligneNb2)
 	   
 	   (case ligneNb1
 			(1 (case posCoupLig1
@@ -426,13 +409,7 @@
 (defun fillCroixCol(colNb1 colNb2)
    (let ( (posCoupCol1 (1+ (act-r-random 3)))  
 		  (posCoupCol2 (1+ (act-r-random 3))) 
-		  (randomNbCol (1+ (act-r-random 2)))
 		)
-	   
-	   (format t "x ~d ~%" posCoupCol1)
-	   (format t "y ~d ~%" posCoupCol2)
-	   (format t "col ~d ~%" colNb1)
-	   (format t "col ~d ~%" colNb2)
 	   
 	   (case colNb1
 			(1 (case posCoupCol1
@@ -489,9 +466,6 @@
 		(while (eql posCoupDiag1 posCoupDiag2)
 			(setf posCoupDiag1 (1+ (act-r-random 6))) 
 		)
-		
-	   (format t "case ~d ~%" posCoupDiag1)
-	   (format t "case ~d ~%" posCoupDiag2)
 	   
 		(case diagNb
 			(1 (case posCoupDiag1
