@@ -36,6 +36,10 @@
 			(1 (createWinBoard coupGagnantLigne coupGagnantCol))
 			(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
 		)
+		
+		(drawplateau)
+		
+		(set-goal *plateau* nil)
 	)
 )
 
@@ -104,8 +108,6 @@
 			)
 			(4 (progn (setf (slot-value *plateau* 'case31) "O") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case13) "O")  (fillCroixDiag 2)))
 		)
-		
-		(drawplateau)
 	)
 )
 
@@ -174,8 +176,6 @@
 			)
 			(4 (progn (setf (slot-value *plateau* 'case31) "X") (setf (slot-value *plateau* 'case22) "E") (setf (slot-value *plateau* 'case13) "X") (fillRondDiag 2)))
 		)
-		
-		(drawplateau)
 	)
 )
 
@@ -523,15 +523,31 @@
 )
 
    
-(defun setGoal()
-	(goal-focus-fct (car (define-chunks-fct ; crée un nouveau chunk et le met dans le goal
-								 `((isa matrice ligne1, (car  (define-chunks-fct `(( isa triple pos, "1"  case1 , "E" case2 , "O" case3 , "X"))))
-									state, nil
-								  ))
-						 )
-				    )
-	)
-(run-full-time 10) 
+(defun set-goal(plateau &optional state)
+   (if (buffer-read 'goal) ; s'il y a un chunk dans le buffers goal
+        (mod-focus-fct `(
+                            case1_1 ,(slot-value plateau 'case11)  case1_2 ,(slot-value plateau 'case12) case1_3 ,(slot-value plateau 'case13)
+                            case2_1 ,(slot-value plateau 'case21)  case2_2 ,(slot-value plateau 'case22) case2_3 ,(slot-value plateau 'case23)
+                            case3_1 ,(slot-value plateau 'case31)  case3_2 ,(slot-value plateau 'case32) case3_3 ,(slot-value plateau 'case33)
+                            currentligne, 1
+                            currentCol, 1
+                            state , state
+                       )
+        )
+        (goal-focus-fct (car (define-chunks-fct ; crée un nouveau chunk et le met dans le goal
+                            `((isa board-state 
+                                case1_1 ,(slot-value plateau 'case11)  case1_2 ,(slot-value plateau 'case12) case1_3 ,(slot-value plateau 'case13)
+                                case2_1 ,(slot-value plateau 'case21)  case2_2 ,(slot-value plateau 'case22) case2_3 ,(slot-value plateau 'case23)
+                                case3_1 ,(slot-value plateau 'case31)  case3_2 ,(slot-value plateau 'case32) case3_3 ,(slot-value plateau 'case33)
+                                currentligne, 1
+                                currentCol, 1
+                                state , state
+                            ))
+                            )
+                        )
+        )
+    ) 
+   (run-full-time 10)
 )
  
 
@@ -539,11 +555,11 @@
 
 (define-chunks 
 
-    (test isa chunk) 
+    (test isa chunk)
 )
 
 (chunk-type pattern id case1 case2 case3) 
-(chunk-type board-state ligne1 ligne2 ligne3 col1 col2 col3 diag1 diag2  currentligne currentCol state) 
+(chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentligne currentCol state) 
 (chunk-type learned-move ligne col diago1 diago2 x y) 
 (declare-buffer-usage goal board-state :all)
 
