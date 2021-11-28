@@ -367,6 +367,173 @@
 	)
 )
 
+;;; Place deux croix, une dans ligneNb1 à la  position posCoupLig1 et l'autre dans ligneNb2 à la pos posCoupLig2
+(defun fillCroixLigne(ligneNb1 ligneNb2)
+   (let ( (posCoupLig1 (1+ (act-r-random 3)))  
+		  (posCoupLig2 (1+ (act-r-random 3))) 
+		)
+	   
+	   (format t "x ~d ~%" posCoupLig1)
+	   (format t "y ~d ~%" posCoupLig2)
+	   (format t "ligne ~d ~%" ligneNb1)
+	   (format t "ligne ~d ~%" ligneNb2)
+	   
+	   (case ligneNb1
+			(1 (case posCoupLig1
+				(1 (setf (slot-value *plateau* 'case11) "X"))
+				(2 (setf (slot-value *plateau* 'case12) "X"))
+				(3 (setf (slot-value *plateau* 'case13) "X"))
+				)
+			)
+			(2 (case posCoupLig1
+				(1 (setf (slot-value *plateau* 'case21) "X"))
+				(2 (setf (slot-value *plateau* 'case22) "X"))
+				(3 (setf (slot-value *plateau* 'case23) "X"))
+				)
+			)
+			(3 (case posCoupLig1
+				(1 (setf (slot-value *plateau* 'case31) "X"))
+				(2 (setf (slot-value *plateau* 'case32) "X"))
+				(3 (setf (slot-value *plateau* 'case33) "X"))
+				)
+			)
+		)
+		
+	   (case ligneNb2
+			(1 (case posCoupLig2
+				(1 (setf (slot-value *plateau* 'case11) "X"))
+				(2 (setf (slot-value *plateau* 'case12) "X"))
+				(3 (setf (slot-value *plateau* 'case13) "X"))
+				)
+			)
+			(2 (case posCoupLig2
+				(1 (setf (slot-value *plateau* 'case21) "X"))
+				(2 (setf (slot-value *plateau* 'case22) "X"))
+				(3 (setf (slot-value *plateau* 'case23) "X"))
+				)
+			)
+			(3 (case posCoupLig2
+				(1 (setf (slot-value *plateau* 'case31) "X"))
+				(2 (setf (slot-value *plateau* 'case32) "X"))
+				(3 (setf (slot-value *plateau* 'case33) "X"))
+				)
+			)
+		)
+	)
+)
+
+;;; place une croix dans posCoupLig1 à la COLONNE colNb1 et posCoupLig2 à la COLONNE colNb2
+(defun fillCroixCol(colNb1 colNb2)
+   (let ( (posCoupCol1 (1+ (act-r-random 3)))  
+		  (posCoupCol2 (1+ (act-r-random 3))) 
+		  (randomNbCol (1+ (act-r-random 2)))
+		)
+	   
+	   (format t "x ~d ~%" posCoupCol1)
+	   (format t "y ~d ~%" posCoupCol2)
+	   (format t "col ~d ~%" colNb1)
+	   (format t "col ~d ~%" colNb2)
+	   
+	   (case colNb1
+			(1 (case posCoupCol1
+				(1 (setf (slot-value *plateau* 'case11) "X"))
+				(2 (setf (slot-value *plateau* 'case21) "X"))
+				(3 (setf (slot-value *plateau* 'case31) "X"))
+				)
+			)
+			(2 (case posCoupCol1
+				(1 (setf (slot-value *plateau* 'case12) "X"))
+				(2 (setf (slot-value *plateau* 'case22) "X"))
+				(3 (setf (slot-value *plateau* 'case32) "X"))
+				)
+			)
+			(3 (case posCoupCol1
+				(1 (setf (slot-value *plateau* 'case13) "X"))
+				(2 (setf (slot-value *plateau* 'case23) "X"))
+				(3 (setf (slot-value *plateau* 'case33) "X"))
+				)
+			)
+		)
+		
+	   (case colNb2
+			(1 (case posCoupCol2
+				(1 (setf (slot-value *plateau* 'case11) "X"))
+				(2 (setf (slot-value *plateau* 'case21) "X"))
+				(3 (setf (slot-value *plateau* 'case31) "X"))
+				)
+			)
+			(2 (case posCoupCol2
+				(1 (setf (slot-value *plateau* 'case12) "X"))
+				(2 (setf (slot-value *plateau* 'case22) "X"))
+				(3 (setf (slot-value *plateau* 'case32) "X"))
+				)
+			)
+			(3 (case posCoupCol2
+				(1 (setf (slot-value *plateau* 'case13) "X"))
+				(2 (setf (slot-value *plateau* 'case23) "X"))
+				(3 (setf (slot-value *plateau* 'case33) "X"))
+				)
+			)
+		)
+	)
+)
+
+;;; place 2 croix partout sauf dans la diagonale diagNb
+(defun fillCroixDiag(diagNb)
+
+	(let ( (posCoupDiag1 (1+ (act-r-random 6)))  
+		   (posCoupDiag2 (1+ (act-r-random 6)))
+		 )
+		 
+		; Si les coups sont aux même endroits
+		(while (eql posCoupDiag1 posCoupDiag2)
+			(setf posCoupDiag1 (1+ (act-r-random 6))) 
+		)
+		
+	   (format t "case ~d ~%" posCoupDiag1)
+	   (format t "case ~d ~%" posCoupDiag2)
+	   
+		(case diagNb
+			(1 (case posCoupDiag1
+				(1 (setf (slot-value *plateau* 'case12) "X"))
+				(2 (setf (slot-value *plateau* 'case13) "X"))
+				(3 (setf (slot-value *plateau* 'case23) "X"))
+				(4 (setf (slot-value *plateau* 'case32) "X"))
+				(5 (setf (slot-value *plateau* 'case31) "X"))
+				(6 (setf (slot-value *plateau* 'case21) "X"))
+				)
+				
+			   (case posCoupDiag2
+				(1 (setf (slot-value *plateau* 'case12) "X"))
+				(2 (setf (slot-value *plateau* 'case13) "X"))
+				(3 (setf (slot-value *plateau* 'case23) "X"))
+				(4 (setf (slot-value *plateau* 'case32) "X"))
+				(5 (setf (slot-value *plateau* 'case31) "X"))
+				(6 (setf (slot-value *plateau* 'case21) "X"))
+				)
+			)
+			(2 (case posCoupDiag1
+				(1 (setf (slot-value *plateau* 'case11) "X"))
+				(2 (setf (slot-value *plateau* 'case12) "X"))
+				(3 (setf (slot-value *plateau* 'case21) "X"))
+				(4 (setf (slot-value *plateau* 'case23) "X"))
+				(5 (setf (slot-value *plateau* 'case32) "X"))
+				(6 (setf (slot-value *plateau* 'case33) "X"))
+				)
+				
+			   (case posCoupDiag2
+				(1 (setf (slot-value *plateau* 'case11) "X"))
+				(2 (setf (slot-value *plateau* 'case12) "X"))
+				(3 (setf (slot-value *plateau* 'case21) "X"))
+				(4 (setf (slot-value *plateau* 'case23) "X"))
+				(5 (setf (slot-value *plateau* 'case32) "X"))
+				(6 (setf (slot-value *plateau* 'case33) "X"))
+				)
+			)
+		)
+	)
+)
+
 
 
 (defun drawplateau()
