@@ -529,8 +529,10 @@
                             case1_1 ,(slot-value plateau 'case11)  case1_2 ,(slot-value plateau 'case12) case1_3 ,(slot-value plateau 'case13)
                             case2_1 ,(slot-value plateau 'case21)  case2_2 ,(slot-value plateau 'case22) case2_3 ,(slot-value plateau 'case23)
                             case3_1 ,(slot-value plateau 'case31)  case3_2 ,(slot-value plateau 'case32) case3_3 ,(slot-value plateau 'case33)
-                            currentligne, 1
+                            currentLigne, 1
                             currentCol, 1
+							bestMoveLig, nil
+							bestMoveCol, nil
                             state , state
                        )
         )
@@ -539,8 +541,10 @@
                                 case1_1 ,(slot-value plateau 'case11)  case1_2 ,(slot-value plateau 'case12) case1_3 ,(slot-value plateau 'case13)
                                 case2_1 ,(slot-value plateau 'case21)  case2_2 ,(slot-value plateau 'case22) case2_3 ,(slot-value plateau 'case23)
                                 case3_1 ,(slot-value plateau 'case31)  case3_2 ,(slot-value plateau 'case32) case3_3 ,(slot-value plateau 'case33)
-                                currentligne, 1
+                                currentLigne, 1
                                 currentCol, 1
+								bestMoveLig, nil
+								bestMoveCol, nil
                                 state , state
                             ))
                             )
@@ -554,12 +558,17 @@
 (define-model tictactoe
 
 (define-chunks 
-
-    (test isa chunk)
+    (search-empty isa chunk)
+    (create-move isa chunk)
+    (select-line isa chunk)
+    (select-col isa chunk)
+    (select-diag isa chunk)
+    (create-col isa chunk)
+    (create-ligne isa chunk)
 )
 
 (chunk-type pattern id case1 case2 case3) 
-(chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentligne currentCol state) 
+(chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentLigne currentCol bestMoveLig bestMoveCol state) 
 (chunk-type learned-move ligne col diago1 diago2 x y) 
 (declare-buffer-usage goal board-state :all)
 
@@ -589,5 +598,121 @@
 	(EXO ISA pattern id 123 case1 "E" case2 "X" case3 "O")
 	(EOX ISA pattern id 132 case1 "E" case2 "O" case3 "X")
 )
+
+(p start
+   =goal>
+        isa board-state
+        state nil
+   ==>
+   =goal>
+        state search-empty
+)
+
+(p test-empty-case1_1
+   =goal>
+        state search-empty
+		case1_1 "E"
+==>
+    =goal>
+		currentLigne 1
+		currentCol 1
+		state create-move
+)
+
+
+
+(p first-empty
+   =goal>
+   		state create-move
+		bestMoveLig nil
+		bestMoveCol nil
+		currentLigne =lig
+		currentCol =col
+==>
+   =goal>
+		bestMoveLig =lig
+		bestMoveCol =col
+)
+
+(p create-move
+   =goal>
+		state create-move
+		- bestMoveLig nil
+		- bestMoveCol nil
+==>
+   =goal>
+		state select-line
+)
+
+(p select-line1
+   =goal>
+		state select-line
+		currentLigne 1
+		case1_1 =c1
+		case1_2 =c2
+		case1_3 =c3
+==>
+   +retrieval> 
+		isa pattern
+		case1 =c1
+		case2 =c2
+		case3 =c3
+	=goal>
+		state create-ligne
+)
+
+(p create-line
+	=goal>
+		state create-ligne
+	=retrieval> 
+		isa pattern
+		id =idpattern
+	?imaginal>
+		buffer empty
+		state free
+==>
+    +imaginal>
+		isa learned-move
+		ligne =idpattern
+	=goal>
+		state select-col
+)
+
+(p select-col1
+	=goal>
+		state select-col
+		currentCol 1
+		case1_1 =c1
+		case2_1 =c2
+		case3_1 =c3
+==>
+	+retrieval> 
+		isa pattern
+		case1 =c1
+		case2 =c2
+		case3 =c3
+	=goal>
+		state create-col
+)
+
+(p create-col
+	=goal>
+		state create-col
+	=retrieval> 
+		isa pattern
+		id =idpattern
+	=imaginal>
+		isa learned-move
+		col nil
+==>
+    =imaginal>
+		col =idpattern
+	=goal>
+		state select-diag
+)
+
+
+
+
 
 )
