@@ -13,7 +13,7 @@
    case33)
 )
 
-(defvar *coords-responses* nil)
+(defvar *response* nil)
 (defvar *plateau* (make-instance 'plateau))
 
 (defun initplateau()	
@@ -40,26 +40,20 @@
 		
 		(drawplateau)
 		
-		(setf *coords-responses* nil)
+		(setf *response* nil)
 		
 		(add-act-r-command "response" 'respond-to-key-press)
 		(monitor-act-r-command "output-key" "response")
 		
 		(set-goal *plateau* nil)
 		
-			(remove-act-r-command-monitor "output-key" "response")
-			(remove-act-r-command "response")
+		(remove-act-r-command-monitor "output-key" "response")
+		(remove-act-r-command "response")
 			
-			(if (eql (nth 1 *coords-responses*) coupGagnantLigne)
-				(if (eql (nth 2 *coords-responses*) coupGagnantCol)
-					(case typeCoup
-						(1 (response-to-model "win"))
-						(2 (response-to-model "block"))
-					)
-					(response-to-model "lose")
-				)
-				(response-to-model "lose")
-			)
+		(case typeCoup
+			(1 (response-to-model coupGagnantLigne coupGagnantCol "win"))
+			(2 (response-to-model coupGagnantLigne coupGagnantCol "block"))
+		)
 	)
 )
 
@@ -584,13 +578,16 @@
    (run-full-time 10)
 )
 
-(defun response-to-model(state)
+(defun response-to-model(x y state)
 	(if (buffer-read 'goal) ; s'il y a un chunk dans le buffers goal
-        (mod-focus-fct `(state , state)
+        (mod-focus-fct `(goodAnswerLig , x
+			goodAnswerCol , y
+			state , state)
         )
         (goal-focus-fct (car (define-chunks-fct ; crée un nouveau chunk et le met dans le goal
-                            `((isa board-state state , state))
-                            )
+                            `((isa response oodAnswerLig , x
+								goodAnswerCol , y
+								state , state)))
                         )
         )
     ) 
@@ -625,6 +622,7 @@
 (chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentLigne currentCol prevLigne prevCol firstEmptyLig firstEmptyCol state) 
 (chunk-type learned-move ligne col diag1 diag2) 
 (declare-buffer-usage goal board-state :all)
+(chunk-type response goodAnswerLig goodAnswerCol state)
 
 (add-dm
 	(EEE ISA pattern id 111 case1 "E" case2 "E" case3 "E") ;E = 1
