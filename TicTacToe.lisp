@@ -569,7 +569,8 @@
 	(create-diag1 isa chunk)
 	(select-diag2 isa chunk)
 	(create-diag2 isa chunk)
-	(remember-move isa chunk)
+	(try-remember-move isa chunk)
+	(answer isa chunk)
 )
 
 (chunk-type pattern id case1 case2 case3) 
@@ -613,7 +614,7 @@
         state search-empty
 )
 
-(p test-empty-case1_1
+(p read-empty-case1_1
    =goal>
         state search-empty
 		case1_1 "E"
@@ -623,7 +624,6 @@
 		currentCol 1
 		state create-move
 )
-
 
 
 (p first-empty
@@ -735,13 +735,16 @@
 )
 
 (p no-diag1
-	=goal>
-		state select-diag1
-	?retrieval>
-		buffer failure
+    =goal>
+        state select-diag1
+        currentCol =nb
+        - currentLigne =nb
+        case1_1 =c1
+        case2_2 =c2
+        case3_3 =c3
 ==>
-	=goal>
-		select-diag2
+    =goal>
+        state select-diag2
 )
 
 (p create-diag1
@@ -821,7 +824,15 @@
 		buffer failure
 ==>
 	=goal>
-		remember-move
+		state try-remember-move
+)
+
+(p no-diag2-2
+	=goal>
+		state select-diag2
+==>
+	=goal>
+		state try-remember-move
 )
 
 (p create-diag2
@@ -837,7 +848,89 @@
     =imaginal>
 		diag2 =idpattern
 	=goal>
-		state remember-move
+		state try-remember-move
+)
+
+(p try-remember-move
+	=goal>
+		state try-remember-move
+	=imaginal>
+		isa learned-move
+		ligne 	=arg1
+		col 	=arg2
+		diag1	=arg3
+		diag2	=arg4
+==>
+	=imaginal>
+	+retrieval>
+		ISA		learned-move
+		ligne      =arg1
+		col        =arg2
+		diag1 	   =arg3
+		diag2 	   =arg4
+)
+
+(p try-remember-move-no-diag2
+	=goal>
+		state try-remember-move
+	=imaginal>
+		isa learned-move
+		ligne 	=arg1
+		col 	=arg2
+		diag1	=arg3
+		diag2	nil
+==>
+	=imaginal>
+	+retrieval>
+		ISA		learned-move
+		ligne      =arg1
+		col        =arg2
+		diag1 	   =arg3
+		diag2		nil
+)
+
+(p cannot-remember-move
+	=goal>
+		state try-remember-move
+	?retrieval>
+		buffer failure
+==>
+	=goal>
+		state search-empty
+)
+
+
+(p remember-move
+	=goal>
+		state try-remember-move
+	=retrieval>
+		ISA		learned-move
+		ligne      =arg1
+		col        =arg2
+		diag1 	   =arg3
+		diag2 	   =arg4
+		x 		   =arg5
+		y 		   =arg6
+==>
+	=goal>
+		state answer
+)
+
+(p not-continue-search-empty 
+	=goal>
+		state search-empty
+		- case1_1 "E"
+		- case1_2 "E"
+		- case1_3 "E"
+		- case2_1 "E"
+		- case2_2 "E"
+		- case2_3 "E"
+		- case3_1 "E"
+		- case3_2 "E"
+		- case3_3 "E"
+	==>
+	=goal>
+		state answer
 )
 
 )
