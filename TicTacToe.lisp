@@ -39,8 +39,32 @@
 		
 		(drawplateau)
 		
-		(set-goal *plateau* nil)
+		(setf *coords-response* nil)
+		
+		(add-act-r-command "response" 'respond-to-key-press)
+		(monitor-act-r-command "output-key" "response")
+		
+		(let((modelKey (set-goal *plateau* nil)))
+		
+		(remove-act-r-command-monitor "output-key" "response")
+		(remove-act-r-command "response")
+		
+		(if (eql (nth 1 *coords-response*) coupGagnantLigne)
+			(if (eql (nth 2 *coords-response*) coupGagnantCol)
+				(case typeCoup
+					(1 (response-to-model("win")))
+					(2 (response-to-model("block")))
+				)
+				(response-to-model("loose"))
+			)
+			(response-to-model("loose"))
+		)
 	)
+)
+
+(defun respond-to-key-press (model key)
+	(declare (ignore model))
+	(push key *coords-responses*))
 )
 
 (defun createBlockBoard(x y)
@@ -551,6 +575,20 @@
 								prevCol, nil
                                 state , state
                             ))
+                            )
+                        )
+        )
+    ) 
+   (run-full-time 10)
+   *model-action*
+)
+
+(defun response-to-model(state)
+	(if (buffer-read 'goal) ; s'il y a un chunk dans le buffers goal
+        (mod-focus-fct `(state , state)
+        )
+        (goal-focus-fct (car (define-chunks-fct ; crée un nouveau chunk et le met dans le goal
+                            `((isa board-state state , state))
                             )
                         )
         )
