@@ -565,11 +565,16 @@
     (select-diag isa chunk)
     (create-col isa chunk)
     (create-ligne isa chunk)
+	(select-diag1 isa chunk)
+	(create-diag1 isa chunk)
+	(select-diag2 isa chunk)
+	(create-diag2 isa chunk)
+	(remember-move isa chunk)
 )
 
 (chunk-type pattern id case1 case2 case3) 
 (chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentLigne currentCol bestMoveLig bestMoveCol state) 
-(chunk-type learned-move ligne col diago1 diago2 x y) 
+(chunk-type learned-move ligne col diag1 diag2 x y) 
 (declare-buffer-usage goal board-state :all)
 
 (add-dm
@@ -708,12 +713,12 @@
     =imaginal>
 		col =idpattern
 	=goal>
-		state select-diag
+		state select-diag1
 )
 
 (p select-diag1
 	=goal>
-		state select-col
+		state select-diag1
 		currentCol =nb
 		currentLigne =nb
 		case1_1 =c1
@@ -726,12 +731,38 @@
 		case2 =c2
 		case3 =c3
 	=goal>
-		state create-col
+		state create-diag1
+)
+
+(p no-diag1
+	=goal>
+		state select-diag1
+	?retrieval>
+		buffer failure
+==>
+	=goal>
+		select-diag2
+)
+
+(p create-diag1
+	=goal>
+		state create-diag1
+	=retrieval> 
+		isa pattern
+		id =idpattern
+	=imaginal>
+		isa learned-move
+		diag1 nil
+==>
+    =imaginal>
+		diag1 =idpattern
+	=goal>
+		state select-diag2
 )
 
 (p select-diag21
 	=goal>
-		state select-col
+		state select-diag2
 		currentCol 1
 		currentLigne 3
 		case1_3 =c1
@@ -744,12 +775,12 @@
 		case2 =c2
 		case3 =c3
 	=goal>
-		state create-col
+		state create-diag2
 )
 
 (p select-diag22
 	=goal>
-		state select-col
+		state select-diag2
 		currentCol 2
 		currentLigne 2
 		case1_3 =c1
@@ -762,12 +793,12 @@
 		case2 =c2
 		case3 =c3
 	=goal>
-		state create-col
+		state create-diag2
 )
 
 (p select-diag23
 	=goal>
-		state select-col
+		state select-diag2
 		currentCol 3
 		currentLigne 1
 		case1_3 =c1
@@ -780,7 +811,33 @@
 		case2 =c2
 		case3 =c3
 	=goal>
-		state create-col
+		state create-diag2
+)
+
+(p no-diag2
+	=goal>
+		state select-diag2
+	?retrieval>
+		buffer failure
+==>
+	=goal>
+		remember-move
+)
+
+(p create-diag2
+	=goal>
+		state create-diag2
+	=retrieval> 
+		isa pattern
+		id =idpattern
+	=imaginal>
+		isa learned-move
+		diag2 nil
+==>
+    =imaginal>
+		diag2 =idpattern
+	=goal>
+		state remember-move
 )
 
 )
