@@ -571,6 +571,7 @@
 	(create-diag2 isa chunk)
 	(try-remember-move isa chunk)
 	(answer isa chunk)
+	(replace-empty isa chunk)
 )
 
 (chunk-type pattern id case1 case2 case3) 
@@ -935,7 +936,7 @@
 
 (p replace-empty11
 	=goal>
-		state replace-empty1
+		state replace-empty
 		currentLigne 1
 		currentCol 1
 ==>
@@ -946,7 +947,7 @@
 
 (p replace-empty12
 	=goal>
-		state replace-empty1
+		state replace-empty
 		currentLigne 1
 		currentCol 2
 ==>
@@ -957,7 +958,7 @@
 
 (p replace-empty13
 	=goal>
-		state replace-empty1
+		state replace-empty
 		currentLigne 1
 		currentCol 3
 ==>
@@ -968,7 +969,7 @@
 
 (p replace-empty21
 	=goal>
-		state replace-empty1
+		state replace-empty
 		currentLigne 2
 		currentCol 1
 ==>
@@ -979,7 +980,7 @@
 
 (p replace-empty22
 	=goal>
-		state replace-empty1
+		state replace-empty
 		currentLigne 2
 		currentCol 2
 ==>
@@ -990,7 +991,7 @@
 
 (p replace-empty23
 	=goal>
-		state replace-empty1
+		state replace-empty
 		currentLigne 2
 		currentCol 3
 ==>
@@ -1001,7 +1002,7 @@
 
 (p replace-empty31
 	=goal>
-		state replace-empty1
+		state replace-empty
 		currentLigne 3
 		currentCol 1
 ==>
@@ -1012,7 +1013,7 @@
 
 (p replace-empty32
 	=goal>
-		state replace-empty1
+		state replace-empty
 		currentLigne 3
 		currentCol 2
 ==>
@@ -1023,7 +1024,7 @@
 
 (p replace-empty33
 	=goal>
-		state replace-empty1
+		state replace-empty
 		currentLigne 3
 		currentCol 3
 ==>
