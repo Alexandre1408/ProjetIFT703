@@ -576,11 +576,12 @@
 	(try-remember-move isa chunk)
 	(answer isa chunk)
 	(replace-empty isa chunk)
+	(remembering isa chunk)
 )
 
 (chunk-type pattern id case1 case2 case3) 
 (chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentLigne currentCol prevLigne prevCol bestMoveLig bestMoveCol state) 
-(chunk-type learned-move ligne col diag1 diag2 x y) 
+(chunk-type learned-move ligne col diag1 diag2) 
 (declare-buffer-usage goal board-state :all)
 
 (add-dm
@@ -1198,6 +1199,7 @@
 		state try-remember-move
 )
 
+;essaye de se rappeler d'un coup avec 4 pattern
 (p try-remember-move-both-diag
 	=goal>
 		state try-remember-move
@@ -1215,8 +1217,11 @@
 		col        =arg2
 		diag1 	   =arg3
 		diag2 	   =arg4
+	=goal>
+		state remembering
 )
 
+;essaye de se rappeler d'un coup avec 3 pattern
 (p try-remember-move-only-diag1
 	=goal>
 		state try-remember-move
@@ -1234,8 +1239,11 @@
 		col        =arg2
 		diag1 	   =arg3
 		diag2		nil
+	=goal>
+		state remembering
 )
 
+;essaye de se rappeler d'un coup avec 3 pattern
 (p try-remember-move-only-diag2
 	=goal>
 		state try-remember-move
@@ -1253,11 +1261,13 @@
 		col        =arg2
 		diag1 	   nil
 		diag2		=arg3
+	=goal>
+		state remembering
 )
 
+;essaye de se rappeler d'un coup avec 2 pattern
 (p try-remember-move-no-diag
 	=goal>
-	;changer l'état en sortie ?
 		state try-remember-move
 	=imaginal>
 		isa learned-move
@@ -1273,14 +1283,15 @@
 		col        =arg2
 		diag1 	   nil
 		diag2	   nil
+	=goal>
+		state remembering
 )
 
 (p cannot-remember-move
 	=goal>
-		state try-remember-move
+		state remembering
 	?retrieval>
 		buffer failure
-	
 ==>
 	=goal>
 		state search-empty
@@ -1290,15 +1301,15 @@
 
 (p remember-move
 	=goal>
-		state try-remember-move
+		state remembering
 	=retrieval>
 		ISA		learned-move
 		ligne      =arg1
 		col        =arg2
 		diag1 	   =arg3
 		diag2 	   =arg4
-		x 		   =arg5
-		y 		   =arg6
+		;x 		   =arg5
+		;y 		   =arg6
 ==>
 	=goal>
 		state answer
@@ -1307,16 +1318,16 @@
 (p not-continue-search-empty 
 	=goal>
 		state search-empty
-		- case1_1 "E"
-		- case1_2 "E"
-		- case1_3 "E"
-		- case2_1 "E"
-		- case2_2 "E"
-		- case2_3 "E"
-		- case3_1 "E"
-		- case3_2 "E"
-		- case3_3 "E"
+		prevLigne 3
+		prevCol 3
+	    currentCol  3
+		currentLigne  3
 	==>
+	=goal>
+		state answer
+)
+
+(p answer-never-remembered
 	=goal>
 		state answer
 )
