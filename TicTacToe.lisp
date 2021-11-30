@@ -46,18 +46,19 @@
 		
 		(let((modelKey (set-goal *plateau* nil)))
 		
-		(remove-act-r-command-monitor "output-key" "response")
-		(remove-act-r-command "response")
-		
-		(if (eql (nth 1 *coords-response*) coupGagnantLigne)
-			(if (eql (nth 2 *coords-response*) coupGagnantCol)
-				(case typeCoup
-					(1 (response-to-model(state)))
-					(2 (response-to-model(state)))
+			(remove-act-r-command-monitor "output-key" "response")
+			(remove-act-r-command "response")
+			
+			(if (eql (nth 1 *coords-response*) coupGagnantLigne)
+				(if (eql (nth 2 *coords-response*) coupGagnantCol)
+					(case typeCoup
+						(1 (response-to-model(state)))
+						(2 (response-to-model(state)))
+					)
+					(response-to-model(state))
 				)
 				(response-to-model(state))
 			)
-			(response-to-model(state))
 		)
 	)
 )
