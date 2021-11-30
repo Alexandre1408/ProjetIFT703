@@ -1058,6 +1058,7 @@
 		state create-diag1
 )
 
+;la case actuelle n'a pas de diagonal 1
 (p no-diag1
     =goal>
         state select-diag1
@@ -1087,7 +1088,8 @@
 		state select-diag2
 )
 
-(p select-diag21
+;selectionne la diagonal numéro 2 de la case ligne 2 col 1
+(p select-diag2_1
 	=goal>
 		state select-diag2
 		prevLigne 1
@@ -1105,7 +1107,8 @@
 		state create-diag2
 )
 
-(p select-diag22
+;selectionne la diagonal numéro 2 de la case ligne 2 col 2
+(p select-diag2_2
 	=goal>
 		state select-diag2
 		prevLigne 2
@@ -1123,7 +1126,8 @@
 		state create-diag2
 )
 
-(p select-diag23
+;selectionne la diagonal numéro 2 de la case ligne 3 col 1
+(p select-diag2_3
 	=goal>
 		state select-diag2
 		prevLigne 3
@@ -1141,25 +1145,43 @@
 		state create-diag2
 )
 
-(p no-diag2
+; la case n'a pas de diagonal2 si elle n'est pas à la ligne 1 colonne 3 
+(p no-diag2_1_3
 	=goal>
 		state select-diag2
-		;rajouter condition pr pas prendre cette regle si on a uen diag
-	?retrieval>
-		buffer failure
+		prevLigne		1
+		- prevCol		3
+		
 ==>
 	=goal>
 		state try-remember-move
 )
 
-(p no-diag2-2
+; la case n'a pas de diagonal2 si elle n'est pas à la ligne 2 colonne 2
+(p no-diag2_2_3
 	=goal>
 		state select-diag2
+		prevLigne		2
+		- prevCol		2
+		
 ==>
 	=goal>
 		state try-remember-move
 )
 
+; la case n'a pas de diagonal2 si elle n'est pas à la ligne 3 colonne 1
+(p no-diag2_3_3
+	=goal>
+		state select-diag2
+		prevLigne		3
+		- prevCol		1
+		
+==>
+	=goal>
+		state try-remember-move
+)
+
+;ajoute le pattern correspondant à la diagonal numéro 2 dans le buffer imaginal
 (p create-diag2
 	=goal>
 		state create-diag2
