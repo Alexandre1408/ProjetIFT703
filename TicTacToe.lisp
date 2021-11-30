@@ -61,7 +61,6 @@
 		)
 	)
 )
-)
 
 (defun respond-to-key-press (model key)
 	(declare (ignore model))
