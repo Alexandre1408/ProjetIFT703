@@ -59,14 +59,15 @@
 				)
 				(response-to-model(state))
 			)
-		
+		)
 	)
 )
 
 (defun respond-to-key-press (model key)
 	(declare (ignore model))
-	(push key *coords-responses*))
+	(push key *coords-responses*)
 )
+
 
 (defun createBlockBoard(x y)
 	(let ( ( ligne 0))
