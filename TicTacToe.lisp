@@ -719,8 +719,8 @@
 (p select-diag1
 	=goal>
 		state select-diag1
-		currentCol =nb
 		currentLigne =nb
+		currentCol =nb
 		case1_1 =c1
 		case2_2 =c2
 		case3_3 =c3
@@ -737,8 +737,8 @@
 (p no-diag1
     =goal>
         state select-diag1
-        currentCol =nb
-        - currentLigne =nb
+        currentLigne =nb
+        - currentCol =nb
         case1_1 =c1
         case2_2 =c2
         case3_3 =c3
@@ -766,8 +766,8 @@
 (p select-diag21
 	=goal>
 		state select-diag2
-		currentCol 1
-		currentLigne 3
+		currentLigne 1
+		currentCol 3
 		case1_3 =c1
 		case2_2 =c2
 		case3_1 =c3
@@ -784,8 +784,8 @@
 (p select-diag22
 	=goal>
 		state select-diag2
-		currentCol 2
 		currentLigne 2
+		currentCol 2
 		case1_3 =c1
 		case2_2 =c2
 		case3_1 =c3
@@ -802,8 +802,8 @@
 (p select-diag23
 	=goal>
 		state select-diag2
-		currentCol 3
-		currentLigne 1
+		currentLigne 3
+		currentCol 1
 		case1_3 =c1
 		case2_2 =c2
 		case3_1 =c3
@@ -933,4 +933,101 @@
 		state answer
 )
 
+(p replace-empty11
+	=goal>
+		state replace-empty1
+		currentLigne 1
+		currentCol 1
+==>
+	=goal>
+		state search-empty
+		case1_1 "V"
+)
+
+(p replace-empty12
+	=goal>
+		state replace-empty1
+		currentLigne 1
+		currentCol 2
+==>
+	=goal>
+		state search-empty
+		case1_1 "V"
+)
+
+(p replace-empty13
+	=goal>
+		state replace-empty1
+		currentLigne 1
+		currentCol 3
+==>
+	=goal>
+		state search-empty
+		case1_1 "V"
+)
+
+(p replace-empty21
+	=goal>
+		state replace-empty1
+		currentLigne 2
+		currentCol 1
+==>
+	=goal>
+		state search-empty
+		case1_1 "V"
+)
+
+(p replace-empty22
+	=goal>
+		state replace-empty1
+		currentLigne 2
+		currentCol 2
+==>
+	=goal>
+		state search-empty
+		case1_1 "V"
+)
+
+(p replace-empty23
+	=goal>
+		state replace-empty1
+		currentLigne 2
+		currentCol 3
+==>
+	=goal>
+		state search-empty
+		case1_1 "V"
+)
+
+(p replace-empty31
+	=goal>
+		state replace-empty1
+		currentLigne 3
+		currentCol 1
+==>
+	=goal>
+		state search-empty
+		case1_1 "V"
+)
+
+(p replace-empty32
+	=goal>
+		state replace-empty1
+		currentLigne 3
+		currentCol 2
+==>
+	=goal>
+		state search-empty
+		case1_1 "V"
+)
+
+(p replace-empty33
+	=goal>
+		state replace-empty1
+		currentLigne 3
+		currentCol 3
+==>
+	=goal>
+		state search-empty
+		case1_1 "V"
 )
