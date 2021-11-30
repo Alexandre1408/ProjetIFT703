@@ -52,12 +52,12 @@
 		(if (eql (nth 1 *coords-response*) coupGagnantLigne)
 			(if (eql (nth 2 *coords-response*) coupGagnantCol)
 				(case typeCoup
-					(1 (response-to-model("win")))
-					(2 (response-to-model("block")))
+					(1 (response-to-model(state)))
+					(2 (response-to-model(state)))
 				)
-				(response-to-model("loose"))
+				(response-to-model(state))
 			)
-			(response-to-model("loose"))
+			(response-to-model(state))
 		)
 	)
 )
@@ -615,10 +615,13 @@
 	(answer isa chunk)
 	(replace-empty isa chunk)
 	(remembering isa chunk)
+	(win isa chunk)
+	(lose isa chunk)
+	(block isa chunk)
 )
 
 (chunk-type pattern id case1 case2 case3) 
-(chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentLigne currentCol prevLigne prevCol bestMoveLig bestMoveCol state) 
+(chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentLigne currentCol prevLigne prevCol firstEmptyLig firstEmptyCol state) 
 (chunk-type learned-move ligne col diag1 diag2) 
 (declare-buffer-usage goal board-state :all)
 
@@ -925,21 +928,21 @@
 (p first-empty
    =goal>
    		state create-move
-		bestMoveLig nil
-		bestMoveCol nil
+		firstEmptyLig nil
+		firstEmptyCol nil
 		prevLigne =lig
 		prevCol =col
 ==>
    =goal>
-		bestMoveLig =lig
-		bestMoveCol =col
+		firstEmptyLig =lig
+		firstEmptyCol =col
 )
 
 (p create-move
    =goal>
 		state create-move
-		- bestMoveLig nil
-		- bestMoveCol nil
+		- firstEmptyLig nil
+		- firstEmptyCol nil
 ==>
    =goal>
 		state select-line
@@ -1348,9 +1351,13 @@
 		diag2 	   =arg4
 		;x 		   =arg5
 		;y 		   =arg6
+	?manual>
+		state free
 ==>
-	=goal>
-		state answer
+	+manual>
+		cmd press-key
+		key prevLigne
+		key prevCol
 )
 
 (p not-continue-search-empty 
@@ -1368,6 +1375,13 @@
 (p answer-never-remembered
 	=goal>
 		state answer
+	?manual>
+		state free
+	==>
+	+manual>
+		cmd press-key
+		key firstEmptyLig
+		key firstEmptyCol
 )
 
 )
