@@ -711,8 +711,76 @@
 		state select-diag
 )
 
+(p select-diag1
+	=goal>
+		state select-col
+		currentCol =nb
+		currentLigne =nb
+		case1_1 =c1
+		case2_2 =c2
+		case3_3 =c3
+==>
+	+retrieval> 
+		isa pattern
+		case1 =c1
+		case2 =c2
+		case3 =c3
+	=goal>
+		state create-col
+)
 
+(p select-diag21
+	=goal>
+		state select-col
+		currentCol 1
+		currentLigne 3
+		case1_3 =c1
+		case2_2 =c2
+		case3_1 =c3
+==>
+	+retrieval> 
+		isa pattern
+		case1 =c1
+		case2 =c2
+		case3 =c3
+	=goal>
+		state create-col
+)
 
+(p select-diag22
+	=goal>
+		state select-col
+		currentCol 2
+		currentLigne 2
+		case1_3 =c1
+		case2_2 =c2
+		case3_1 =c3
+==>
+	+retrieval> 
+		isa pattern
+		case1 =c1
+		case2 =c2
+		case3 =c3
+	=goal>
+		state create-col
+)
 
+(p select-diag23
+	=goal>
+		state select-col
+		currentCol 3
+		currentLigne 1
+		case1_3 =c1
+		case2_2 =c2
+		case3_1 =c3
+==>
+	+retrieval> 
+		isa pattern
+		case1 =c1
+		case2 =c2
+		case3 =c3
+	=goal>
+		state create-col
+)
 
 )
