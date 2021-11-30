@@ -13,6 +13,7 @@
    case33)
 )
 
+(defvar *coords-responses* nil)
 (defvar *plateau* (make-instance 'plateau))
 
 (defun initplateau()	
@@ -39,18 +40,18 @@
 		
 		(drawplateau)
 		
-		(setf *coords-response* nil)
+		(setf *coords-responses* nil)
 		
 		(add-act-r-command "response" 'respond-to-key-press)
 		(monitor-act-r-command "output-key" "response")
 		
-		(let((modelKey (set-goal *plateau* nil)))
+		(set-goal *plateau* nil)
 		
 			(remove-act-r-command-monitor "output-key" "response")
 			(remove-act-r-command "response")
 			
-			(if (eql (nth 1 *coords-response*) coupGagnantLigne)
-				(if (eql (nth 2 *coords-response*) coupGagnantCol)
+			(if (eql (nth 1 *coords-responses*) coupGagnantLigne)
+				(if (eql (nth 2 *coords-responses*) coupGagnantCol)
 					(case typeCoup
 						(1 (response-to-model(state)))
 						(2 (response-to-model(state)))
@@ -59,7 +60,6 @@
 				)
 				(response-to-model(state))
 			)
-		)
 	)
 )
 
@@ -582,7 +582,6 @@
         )
     ) 
    (run-full-time 10)
-   *model-action*
 )
 
 (defun response-to-model(state)
