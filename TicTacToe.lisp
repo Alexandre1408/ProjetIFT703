@@ -28,39 +28,27 @@
 	(setf (slot-value *plateau* 'case33) "E")
 )
 
-
-(defun test()
-	(let 	( (response "a")
-					 )
-		(if(STRING-EQUAL response 'a)
-			(format t "1")
-		)
-		(if(STRING-EQUAL response "a")
-			(format t "2")
-		)
-
-	)
-)
-
 (defun tictactoe(loop)
 	(let( (moyenne 0)
 			(compteur 0)
 			(not-win t)
+			(window (open-exp-window "tic tac toe" :visible nil))
 		)
+		(install-device window)
 		(dotimes (i loop)
 			(setf compteur 0)
 			(setf not-win t)
 			(let (	(type-move (+ 1 (act-r-random 2)))
 						(coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
 						(coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
-						(window (open-exp-window "tic tac toe" :visible nil))
 					 )
 					(case type-move
 						(1 (createWinBoard coupGagnantLigne coupGagnantCol))
 						(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
 					)
-					(install-device window)
+					
 					(drawplateau)
+					
 					(while not-win
 						(setf compteur (+ compteur 1))
 						(setf *response* nil)
@@ -95,10 +83,33 @@
 )
 
 (defun run-blocks (blocks block-size)
-	(let ( (retour 0))
-	(dotimes (i blocks)
-		(setf retour (tictactoe block-size)))
-		retour
+	(let ( (retour 0)
+			(points))
+		(dotimes (i blocks)
+			(setf retour (tictactoe block-size))
+			(push retour points)
+			(format t "Anvancee : ~A%~%" (/ (* i 100) blocks))
+		)
+		(format t "Retour : ~A%~%" points)
+		(draw-graph points)
+	)
+)
+
+(defun draw-graph (points)
+	(let ((w (open-exp-window "Data" :visible t :width 550 :height 460))
+		(size (length points))
+		)
+		(add-line-to-exp-window w '(1 0) '(1 6) 'white)
+		(dotimes (i 6)
+			(add-text-to-exp-window w (format nil "~3,1f" (- 6 i)) 
+								  :x 5 :y (+ 5 (* i 80)) :width 35)
+			(add-line-to-exp-window w (list 45 (+ 10 (* i 80))) 
+								  (list 550 (+ 10 (* i 80))) 'white)
+		)
+		
+		(loop for i from 1 to size
+			do (add-line-to-exp-window w (list (+ 45 (* (- i 1) (/ 500 size))) (- 490 (* 80 (nth (- i 1) points)))) (list (+ 45 (* i (/ 500 size))) (- 490 (* 80 (nth i points)))) 'blue)
+		)
 	)
 )
 
@@ -624,7 +635,7 @@
                         )
         )
     ) 
-   (run-full-time 10)
+   (run 100)
 )
 
 (defun response-to-model(x y type-move state)
@@ -643,11 +654,13 @@
                         )
         )
     )
-   (run-full-time 10)
+   (run 100)
 )
  
 
 (define-model tictactoe
+
+;(sgp :v nil)
 
 (define-chunks 
     (search-empty isa chunk)
