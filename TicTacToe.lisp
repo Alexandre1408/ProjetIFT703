@@ -28,16 +28,20 @@
 	(setf (slot-value *plateau* 'case33) "E")
 )
 
+
 (defun main()
-	(let (	(typeCoup (+ 1 (act-r-random 2)))
+
+	(let (	(type-move (+ 1 (act-r-random 2)))
 			(coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
 			(coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
+			(window (open-exp-window "tic tac toe" :visible nil)) 
 		 )
-		(case typeCoup
+		(case type-move
 			(1 (createWinBoard coupGagnantLigne coupGagnantCol))
 			(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
 		)
 		
+		(install-device window)
 		(drawplateau)
 		
 		(setf *response* nil)
@@ -50,16 +54,20 @@
 		(remove-act-r-command-monitor "output-key" "response")
 		(remove-act-r-command "response")
 			
-		(case typeCoup
-			(1 (response-to-model coupGagnantLigne coupGagnantCol "win"))
-			(2 (response-to-model coupGagnantLigne coupGagnantCol "block"))
-		)
+		(if (eql *response* "a")
+		   (format t "RANDOM ~d ~%" 1)
+
+            (case type-move
+                (1 (response-to-model coupGagnantLigne coupGagnantCol "gagnant" "finish"))
+                (2 (response-to-model coupGagnantLigne coupGagnantCol "bloquant" "finish"))
+            )
+        )
 	)
 )
 
 (defun respond-to-key-press (model key)
 	(declare (ignore model))
-	(push key *coords-responses*)
+	(push key *response*)
 )
 
 
@@ -205,7 +213,6 @@
 		  (posCoupLig2 (1+ (act-r-random 3))) 
 		  (randomNb (1+ (act-r-random 2))) 
 		)
-	   ;(format t "RANDOM ~d ~%" randomNb)
 
 		; random si les 2 O sont sur la même ligne
 	   (if (eql randomNb 1)
@@ -551,8 +558,8 @@
                             case3_1 ,(slot-value plateau 'case31)  case3_2 ,(slot-value plateau 'case32) case3_3 ,(slot-value plateau 'case33)
                             currentLigne, 1
                             currentCol, 1
-							bestMoveLig, nil
-							bestMoveCol, nil
+							firstEmptyLig, nil
+							firstEmptyCol, nil
 							prevLigne, nil
 							prevCol, nil
                             state , state
@@ -565,8 +572,8 @@
                                 case3_1 ,(slot-value plateau 'case31)  case3_2 ,(slot-value plateau 'case32) case3_3 ,(slot-value plateau 'case33)
                                 currentLigne, 1
                                 currentCol, 1
-								bestMoveLig, nil
-								bestMoveCol, nil
+								firstEmptyLig, nil
+								firstEmptyCol, nil
 								prevLigne, nil
 								prevCol, nil
                                 state , state
@@ -578,16 +585,19 @@
    (run-full-time 10)
 )
 
-(defun response-to-model(x y state)
+(defun response-to-model(x y type-move state)
+
 	(if (buffer-read 'goal) ; s'il y a un chunk dans le buffers goal
         (mod-focus-fct `(goodAnswerLig , x
 			goodAnswerCol , y
-			state , state)
+			type-move , type-move
+			state, state)
         )
         (goal-focus-fct (car (define-chunks-fct ; crée un nouveau chunk et le met dans le goal
-                            `((isa response oodAnswerLig , x
+                            `((isa result goodAnswerLig , x
 								goodAnswerCol , y
-								state , state)))
+								state, state
+								type-move , type-move)))
                         )
         )
     ) 
@@ -616,13 +626,14 @@
 	(win isa chunk)
 	(lose isa chunk)
 	(block isa chunk)
+	(finish isa chunk)
 )
 
 (chunk-type pattern id case1 case2 case3) 
 (chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentLigne currentCol prevLigne prevCol firstEmptyLig firstEmptyCol state) 
-(chunk-type learned-move ligne col diag1 diag2) 
+(chunk-type learned-move ligne col diag1 diag2 x y type) 
+(chunk-type result goodAnswerLig goodAnswerCol type-move)
 (declare-buffer-usage goal board-state :all)
-(chunk-type response goodAnswerLig goodAnswerCol state)
 
 (add-dm
 	(EEE ISA pattern id 111 case1 "E" case2 "E" case3 "E") ;E = 1
@@ -1243,6 +1254,8 @@
 (p try-remember-move-both-diag
 	=goal>
 		state try-remember-move
+		- currentLigne nil
+		- currentCol nil
 	=imaginal>
 		isa learned-move
 		ligne 	=arg1
@@ -1257,6 +1270,8 @@
 		col        =arg2
 		diag1 	   =arg3
 		diag2 	   =arg4
+		- type "lose"
+		- type nil
 	=goal>
 		state remembering
 )
@@ -1265,6 +1280,8 @@
 (p try-remember-move-only-diag1
 	=goal>
 		state try-remember-move
+		- currentLigne nil
+		- currentCol nil
 	=imaginal>
 		isa learned-move
 		ligne 	=arg1
@@ -1279,6 +1296,8 @@
 		col        =arg2
 		diag1 	   =arg3
 		diag2		nil
+		- type "lose"
+		- type nil
 	=goal>
 		state remembering
 )
@@ -1287,6 +1306,8 @@
 (p try-remember-move-only-diag2
 	=goal>
 		state try-remember-move
+		- currentLigne nil
+		- currentCol nil
 	=imaginal>
 		isa learned-move
 		ligne 	=arg1
@@ -1301,6 +1322,8 @@
 		col        =arg2
 		diag1 	   nil
 		diag2		=arg3
+		- type "lose"
+		- type nil
 	=goal>
 		state remembering
 )
@@ -1309,6 +1332,8 @@
 (p try-remember-move-no-diag
 	=goal>
 		state try-remember-move
+		- currentLigne nil
+		- currentCol nil
 	=imaginal>
 		isa learned-move
 		ligne 	=arg1
@@ -1323,6 +1348,8 @@
 		col        =arg2
 		diag1 	   nil
 		diag2	   nil
+		- type "lose"
+		- type nil
 	=goal>
 		state remembering
 )
@@ -1338,8 +1365,8 @@
 	-imaginal>
 )
 
-
-(p remember-move
+; on joue le coup et on demande une réponse au model grace au buffer manual
+(p remember-move-both-diag
 	=goal>
 		state remembering
 	=retrieval>
@@ -1348,39 +1375,197 @@
 		col        =arg2
 		diag1 	   =arg3
 		diag2 	   =arg4
-		;x 		   =arg5
-		;y 		   =arg6
+		x 		   =arg5
+		y 		   =arg6
+		type 	   =arg7
 	?manual>
 		state free
+	=imaginal>
+		x nil
+		y nil
 ==>
+	=imaginal>
+		ligne      =arg1
+		col        =arg2
+		diag1 	   =arg3
+		diag2 	   =arg4
+		x 		   =arg5
+		y 		   =arg6
+		type	   =arg7
 	+manual>
 		cmd press-key
-		key prevLigne
-		key prevCol
+		key "a"
 )
 
-(p not-continue-search-empty 
+(p remember-move-only-diag1
+	=goal>
+		state remembering
+	=retrieval>
+		ISA		learned-move
+		ligne      =arg1
+		col        =arg2
+		diag1 	   nil
+		diag2 	   =arg4
+		x 		   =arg5
+		y 		   =arg6
+		type 	   =arg7
+	?manual>
+		state free
+	=imaginal>
+		x nil
+		y nil
+==>
+	=imaginal>
+		ligne      =arg1
+		col        =arg2
+		diag1 	   nil
+		diag2 	   =arg4
+		x 		   =arg5
+		y 		   =arg6
+		type	   =arg7
+	+manual>
+		cmd press-key
+		key "a"
+)
+
+(p remember-move-only-diag2
+	=goal>
+		state remembering
+	=retrieval>
+		ISA		learned-move
+		ligne      =arg1
+		col        =arg2
+		diag1 	   =arg3
+		diag2 	   nil
+		x 		   =arg5
+		y 		   =arg6
+		type 	   =arg7
+	?manual>
+		state free
+	=imaginal>
+		x nil
+		y nil
+==>
+	=imaginal>
+		ligne      =arg1
+		col        =arg2
+		diag1 	   =arg3
+		diag2 	   nil
+		x 		   =arg5
+		y 		   =arg6
+		type	   =arg7
+	+manual>
+		cmd press-key
+		key "a"
+)
+
+(p remember-move-no-diag
+	=goal>
+		state remembering
+	=retrieval>
+		ISA		learned-move
+		ligne      =arg1
+		col        =arg2
+		diag1 	   nil
+		diag2 	   nil
+		x 		   =arg5
+		y 		   =arg6
+		type 	   =arg7
+	?manual>
+		state free
+	=imaginal>
+		x nil
+		y nil
+==>
+	=imaginal>
+		ligne      =arg1
+		col        =arg2
+		diag1 	   nil
+		diag2 	   nil
+		x 		   =arg5
+		y 		   =arg6
+		type	   =arg7
+	+manual>
+		cmd press-key
+		key "a"
+)
+
+;si on a trouvé aucun coup : on créé le move associé à la premiere case vide du plateau
+(p create-default-move
 	=goal>
 		state search-empty
 		prevLigne 3
 		prevCol 3
 	    currentCol  3
 		currentLigne  3
+		firstEmptyLig =val1
+		firstEmptyCol =val2
 	==>
 	=goal>
-		state answer
+		state create-move
+		prevLigne =val1
+		prevCol =val2
+		currentCol nil
+		currentLigne nil
 )
 
-(p answer-never-remembered
+
+(p play-default-move
 	=goal>
-		state answer
+		state try-remember-move
+		currentCol nil
+		currentLigne nil
+		prevLigne =val1
+		prevCol   =val2
+	=imaginal>
+		x nil
+		y nil
 	?manual>
 		state free
-	==>
+==>
 	+manual>
 		cmd press-key
-		key firstEmptyLig
-		key firstEmptyCol
+		key "a"
+	=imaginal>
+		x =val1
+		y =val2
+)
+
+(p memorize-win
+	=goal>
+		state "finish"
+		type-move =val
+		goodAnswerLig	=a
+		goodAnswerCol 	=b
+	=imaginal>
+		x =a
+		y =b
+		type nil
+   ?manual>
+      state free
+==>
+	=imaginal>
+		type =val
+	-imaginal>
+	=goal>
+		state finish
+	+manual>
+		cmd press-key
+		key "win"
+)
+
+(p memorize-lose
+	=goal>
+		state "finish"
+		type-move =val
+	=imaginal>
+		type nil
+==>
+	=imaginal>
+		type "lose"
+	-imaginal>
+	=goal>
+		state finish
 )
 
 )
