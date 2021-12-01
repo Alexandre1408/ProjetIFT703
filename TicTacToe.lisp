@@ -28,40 +28,56 @@
 	(setf (slot-value *plateau* 'case33) "E")
 )
 
-
-(defun main()
-
-	(let (	(type-move (+ 1 (act-r-random 2)))
-			(coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
-			(coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
-			(window (open-exp-window "tic tac toe" :visible nil)) 
-		 )
-		(case type-move
-			(1 (createWinBoard coupGagnantLigne coupGagnantCol))
-			(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
+(defun tictactoe(loop)
+	(let ( (moyenne 0)
+			(compteur 0)
+			(not-win t)
 		)
-		
-		(install-device window)
-		(drawplateau)
-		
-		(setf *response* nil)
-		
-		(add-act-r-command "response" 'respond-to-key-press)
-		(monitor-act-r-command "output-key" "response")
-		
-		(set-goal *plateau* nil)
-		
-		(remove-act-r-command-monitor "output-key" "response")
-		(remove-act-r-command "response")
-			
-		(if (eql *response* "a")
-		   (format t "RANDOM ~d ~%" 1)
+		(dotimes (i loop)
+			(setf compteur 0)
+			(setf not-win t)
+			(while not-win
+				(setf compteur (+ compteur 1))
+				(let (	(typeCoup (+ 1 (act-r-random 2)))
+						(coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
+						(coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
+					 )
+					(case typeCoup
+						(1 (createWinBoard coupGagnantLigne coupGagnantCol))
+						(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
+					)
+					
+					(setf *response* nil)
+					
+					(add-act-r-command "response" 'respond-to-key-press)
+					(monitor-act-r-command "output-key" "response")
+					
+					(set-goal *plateau* nil)
+					
+					(if (eql *response* "a")
+						(case typeCoup
+							(1 (response-to-model coupGagnantLigne coupGagnantCol "win"))
+							(2 (response-to-model coupGagnantLigne coupGagnantCol "block"))
+						)
+					)
+					
+					(if (eql *response* "win") (setf not-win nil))
+					
+					(remove-act-r-command-monitor "output-key" "response")
+					(remove-act-r-command "response")
+				)
+			)
+			(setf moyenne (+ moyenne compteur))
+		)
+	(/ moyenne loop)
+	)
+)
 
-            (case type-move
-                (1 (response-to-model coupGagnantLigne coupGagnantCol "gagnant" "finish"))
-                (2 (response-to-model coupGagnantLigne coupGagnantCol "bloquant" "finish"))
-            )
-        )
+(defun run-blocks (blocks block-size)
+	(let ( (retour 0))
+	(dotimes (i blocks)
+		(setf retour (tictactoe block-size)))
+		retour
 	)
 )
 
@@ -69,7 +85,6 @@
 	(declare (ignore model))
 	(push key *response*)
 )
-
 
 (defun createBlockBoard(x y)
 	(let ( ( ligne 0))
@@ -600,7 +615,7 @@
 								type-move , type-move)))
                         )
         )
-    ) 
+    )
    (run-full-time 10)
 )
  
