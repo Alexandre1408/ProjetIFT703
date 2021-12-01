@@ -28,40 +28,63 @@
 	(setf (slot-value *plateau* 'case33) "E")
 )
 
-(defun main()
-	(let (	(typeCoup (+ 1 (act-r-random 2)))
-			(coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
-			(coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
-		 )
-		(case typeCoup
-			(1 (createWinBoard coupGagnantLigne coupGagnantCol))
-			(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
+(defun tictactoe(loop)
+	(let ( (moyenne 0)
+			(compteur 0)
+			(not-win t)
 		)
-		
-		(drawplateau)
-		
-		(setf *response* nil)
-		
-		(add-act-r-command "response" 'respond-to-key-press)
-		(monitor-act-r-command "output-key" "response")
-		
-		(set-goal *plateau* nil)
-		
-		(remove-act-r-command-monitor "output-key" "response")
-		(remove-act-r-command "response")
-			
-		(case typeCoup
-			(1 (response-to-model coupGagnantLigne coupGagnantCol "win"))
-			(2 (response-to-model coupGagnantLigne coupGagnantCol "block"))
+		(dotimes (i loop)
+			(setf compteur 0)
+			(setf not-win t)
+			(while not-win
+				(setf compteur (+ compteur 1))
+				(let (	(typeCoup (+ 1 (act-r-random 2)))
+						(coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
+						(coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
+					 )
+					(case typeCoup
+						(1 (createWinBoard coupGagnantLigne coupGagnantCol))
+						(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
+					)
+					
+					(setf *response* nil)
+					
+					(add-act-r-command "response" 'respond-to-key-press)
+					(monitor-act-r-command "output-key" "response")
+					
+					(set-goal *plateau* nil)
+					
+					(if (eql *response* "a")
+						(case typeCoup
+							(1 (response-to-model coupGagnantLigne coupGagnantCol "win"))
+							(2 (response-to-model coupGagnantLigne coupGagnantCol "block"))
+						)
+					)
+					
+					(if (eql *response* "win") (setf not-win nil))
+					
+					(remove-act-r-command-monitor "output-key" "response")
+					(remove-act-r-command "response")
+				)
+			)
+			(setf moyenne (+ moyenne compteur))
 		)
+	(/ moyenne loop)
+	)
+)
+
+(defun run-blocks (blocks block-size)
+	(let ( (retour 0))
+	(dotimes (i blocks)
+		(setf retour (tictactoe block-size)))
+		retour
 	)
 )
 
 (defun respond-to-key-press (model key)
 	(declare (ignore model))
-	(push key *coords-responses*)
+	(push key *response*)
 )
-
 
 (defun createBlockBoard(x y)
 	(let ( ( ligne 0))
@@ -590,7 +613,7 @@
 								state , state)))
                         )
         )
-    ) 
+    )
    (run-full-time 10)
 )
  
@@ -622,7 +645,6 @@
 (chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentLigne currentCol prevLigne prevCol firstEmptyLig firstEmptyCol state) 
 (chunk-type learned-move ligne col diag1 diag2) 
 (declare-buffer-usage goal board-state :all)
-(chunk-type response goodAnswerLig goodAnswerCol state)
 
 (add-dm
 	(EEE ISA pattern id 111 case1 "E" case2 "E" case3 "E") ;E = 1
