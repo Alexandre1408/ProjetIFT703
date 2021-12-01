@@ -935,24 +935,9 @@
         ;currentCol 3
 )
 
-(p first-empty
-   =goal>
-   		state create-move
-		firstEmptyLig nil
-		firstEmptyCol nil
-		prevLigne =lig
-		prevCol =col
-==>
-   =goal>
-		firstEmptyLig =lig
-		firstEmptyCol =col
-)
-
 (p create-move
    =goal>
 		state create-move
-		- firstEmptyLig nil
-		- firstEmptyCol nil
 ==>
    =goal>
 		state select-line
@@ -1362,6 +1347,23 @@
 ==>
 	=goal>
 		state search-empty
+	-imaginal>
+)
+
+(p cannot-remember-move-first-empty
+   =goal>
+   		state remembering
+		firstEmptyLig nil
+		firstEmptyCol nil
+		prevLigne =lig
+		prevCol =col
+	?retrieval>
+		buffer failure
+==>
+   =goal>
+		state search-empty
+		firstEmptyLig =lig
+		firstEmptyCol =col
 	-imaginal>
 )
 
