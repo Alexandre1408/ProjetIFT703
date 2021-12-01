@@ -258,18 +258,7 @@
 (defun fillRondligne(ligneNb1 ligneNb2)
    (let ( (posCoupLig1 (1+ (act-r-random 3)))  
 		  (posCoupLig2 (1+ (act-r-random 3))) 
-		  (randomNb (1+ (act-r-random 2))) 
 		)
-
-		; random si les 2 O sont sur la même ligne
-	   (if (eql randomNb 1)
-			(setf ligneNb1 ligneNb2)
-	   )
-	   
-	   ; Si les coups sont sur la même ligne et au même endroit, refaire un random
-	   (while (and (eql posCoupLig1 posCoupLig2) (eql ligneNb1 ligneNb2))
-		  (setf posCoupLig1 (1+ (act-r-random 3))) 
-	   )
 	   
 	   (case ligneNb1
 			(1 (case posCoupLig1
@@ -319,18 +308,8 @@
 (defun fillRondCol(colNb1 colNb2)
    (let ( (posCoupCol1 (1+ (act-r-random 3)))  
 		  (posCoupCol2 (1+ (act-r-random 3))) 
-		  (randomNbCol (1+ (act-r-random 2)))
 		)
 
-		; random si les 2 O sont sur la même 	colonne
-	   (if (eql randomNbCol 1)
-			(setf colNb1 colNb2)
-	   )
-	   
-	   ; Si les coups sont sur la même ligne et au même endroit, refaire un random
-	   (while (and (eql posCoupCol1 posCoupCol2) (eql colNb1 colNb2))	
-		  (setf posCoupCol1 (1+ (act-r-random 3))) 
-	   )
 	   
 	   (case colNb1
 			(1 (case posCoupCol1
@@ -660,7 +639,7 @@
 
 (define-model tictactoe
 
-;(sgp :v nil)
+(sgp :esc nil :ans 0.1 :bll 0.5  :ncnar nil :pas nil)
 
 (define-chunks 
     (search-empty isa chunk)
@@ -1462,6 +1441,7 @@
 		key "a"
 )
 
+;joue le move si on s'en rappelle (uniquement la diagonal 1 dans le move)
 (p remember-move-only-diag1
 	=goal>
 		state remembering
@@ -1494,6 +1474,8 @@
 		key "a"
 )
 
+
+;joue le move si on s'en rappelle (uniquement la diagonal 2 dans le move)
 (p remember-move-only-diag2
 	=goal>
 		state remembering
@@ -1526,6 +1508,7 @@
 		key "a"
 )
 
+;joue le move si on s'en rappelle (aucunes diagonal dans le move)
 (p remember-move-no-diag
 	=goal>
 		state remembering
@@ -1577,13 +1560,13 @@
 		currentLigne nil
 )
 
-
+; joue le move par défaut
 (p play-default-move
 	=goal>
 		state try-remember-move
 		currentCol nil
 		currentLigne nil
-		prevLigne =val1
+		prevLigne =val1 ;remplacer par first empty lig et col ? 
 		prevCol   =val2
 	=imaginal>
 		x nil
@@ -1599,7 +1582,8 @@
 		y =val2
 )
 
-(p memorize-win
+;s'active si le modele gagne en jouant dans le move par défaut
+(p memorize-win-default
 	=goal>
 		state "finish"
 		type-move =val
@@ -1621,6 +1605,41 @@
 		cmd press-key
 		key "w"
 )
+
+;s'active si le modele se souvient d'un move de type bloquant 
+(p memorize-win-remember1
+	=goal>
+		state "finish"
+	=imaginal>
+		type "bloquant"
+   ?manual>
+      state free
+==>
+	-imaginal>
+	=goal>
+		state finish
+	+manual>
+		cmd press-key
+		key "w"
+)
+
+;s'active si le modele se souvient d'un move de type gagnant
+(p memorize-win-remember2
+	=goal>
+		state "finish"
+	=imaginal>
+		type "gagnant"
+   ?manual>
+      state free
+==>
+	-imaginal>
+	=goal>
+		state finish
+	+manual>
+		cmd press-key
+		key "w"
+)
+
 
 (p memorize-lose-ligne
 	=goal>
