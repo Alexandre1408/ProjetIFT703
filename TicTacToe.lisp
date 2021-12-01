@@ -47,8 +47,6 @@
 						(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
 					)
 					
-					(drawplateau)
-					
 					(while not-win
 						(setf compteur (+ compteur 1))
 						(setf *response* nil)
@@ -90,10 +88,15 @@
 			(push retour points)
 			(format t "Anvancee : ~A%~%" (/ (* i 100) blocks))
 		)
-		(format t "Retour : ~A%~%" points)
+		(setf points (rev points))
 		(draw-graph points)
 	)
 )
+
+(defun rev(l)
+           (cond
+             ((null l) '())
+             (T (append (rev (cdr l)) (list (car l)))))) 
 
 (defun draw-graph (points)
 	(let ((w (open-exp-window "Data" :visible t :width 550 :height 460))
@@ -639,7 +642,7 @@
 
 (define-model tictactoe
 
-(sgp :esc nil :ans 0.1 :bll 0.5  :ncnar nil :pas nil)
+(sgp :v nil :esc nil :ans 0.1 :bll 0.5  :ncnar nil :pas nil)
 
 (define-chunks 
     (search-empty isa chunk)
