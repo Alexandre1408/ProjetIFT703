@@ -28,44 +28,65 @@
 	(setf (slot-value *plateau* 'case33) "E")
 )
 
+
+(defun test()
+	(let 	( (response "a")
+					 )
+		(if(STRING-EQUAL response 'a)
+			(format t "1")
+		)
+		(if(STRING-EQUAL response "a")
+			(format t "2")
+		)
+
+	)
+)
+
 (defun tictactoe(loop)
-	(let ( (moyenne 0)
+	(let( (moyenne 0)
 			(compteur 0)
 			(not-win t)
 		)
 		(dotimes (i loop)
 			(setf compteur 0)
 			(setf not-win t)
-			(while not-win
-				(setf compteur (+ compteur 1))
-				(let (	(typeCoup (+ 1 (act-r-random 2)))
+			(let (	(type-move (+ 1 (act-r-random 2)))
 						(coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
 						(coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
+						(window (open-exp-window "tic tac toe" :visible nil))
 					 )
-					(case typeCoup
+					(case type-move
 						(1 (createWinBoard coupGagnantLigne coupGagnantCol))
 						(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
 					)
-					
-					(setf *response* nil)
-					
-					(add-act-r-command "response" 'respond-to-key-press)
-					(monitor-act-r-command "output-key" "response")
-					
-					(set-goal *plateau* nil)
-					
-					(if (eql *response* "a")
-						(case typeCoup
-							(1 (response-to-model coupGagnantLigne coupGagnantCol "win"))
-							(2 (response-to-model coupGagnantLigne coupGagnantCol "block"))
+					(install-device window)
+					(drawplateau)
+					(while not-win
+						(setf compteur (+ compteur 1))
+						(setf *response* nil)
+						
+						(add-act-r-command "response" 'respond-to-key-press)
+						(monitor-act-r-command "output-key" "response")
+						
+						(set-goal *plateau* nil)
+						
+						(if (STRING-EQUAL (car *response*) "a")
+							(progn
+								(setf *response* nil)							
+								(case type-move
+									(1 (response-to-model coupGagnantLigne coupGagnantCol "gagnant" "finish"))
+									(2 (response-to-model coupGagnantLigne coupGagnantCol "bloquant" "finish"))
+								) 
+							)
 						)
+					    
+						(if (STRING-EQUAL (car *response*) "w") 
+							(setf not-win nil)
+						)
+
+						(remove-act-r-command-monitor "output-key" "response")
+						(remove-act-r-command "response")
 					)
-					
-					(if (eql *response* "win") (setf not-win nil))
-					
-					(remove-act-r-command-monitor "output-key" "response")
-					(remove-act-r-command "response")
-				)
 			)
 			(setf moyenne (+ moyenne compteur))
 		)
@@ -577,6 +598,9 @@
 							firstEmptyCol, nil
 							prevLigne, nil
 							prevCol, nil
+							goodAnswerCol, nil
+							goodAnswerLig, nil
+							type-move, nil
                             state , state
                        )
         )
@@ -591,6 +615,9 @@
 								firstEmptyCol, nil
 								prevLigne, nil
 								prevCol, nil
+								goodAnswerCol, nil
+								goodAnswerLig, nil
+								type-move, nil
                                 state , state
                             ))
                             )
@@ -645,9 +672,8 @@
 )
 
 (chunk-type pattern id case1 case2 case3) 
-(chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3  currentLigne currentCol prevLigne prevCol firstEmptyLig firstEmptyCol state) 
+(chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3 currentLigne currentCol prevLigne prevCol firstEmptyLig firstEmptyCol goodAnswerLig goodAnswerCol type-move state) 
 (chunk-type learned-move ligne col diag1 diag2 x y type) 
-(chunk-type result goodAnswerLig goodAnswerCol type-move)
 (declare-buffer-usage goal board-state :all)
 
 (add-dm
@@ -1270,7 +1296,6 @@
 		col        =arg2
 		diag1 	   =arg3
 		diag2 	   =arg4
-		- type "lose"
 		- type nil
 	=goal>
 		state remembering
@@ -1296,7 +1321,6 @@
 		col        =arg2
 		diag1 	   =arg3
 		diag2		nil
-		- type "lose"
 		- type nil
 	=goal>
 		state remembering
@@ -1322,7 +1346,6 @@
 		col        =arg2
 		diag1 	   nil
 		diag2		=arg3
-		- type "lose"
 		- type nil
 	=goal>
 		state remembering
@@ -1348,7 +1371,6 @@
 		col        =arg2
 		diag1 	   nil
 		diag2	   nil
-		- type "lose"
 		- type nil
 	=goal>
 		state remembering
@@ -1382,6 +1404,18 @@
 	-imaginal>
 )
 
+;si on se rappelle d'un mauvais coup, on ne fait rien on continue à chercher
+(p remember-bad-move
+	=goal>
+		state remembering
+	=retrieval>
+		ISA		learned-move
+		type    "lose"
+==>
+	=goal>
+		state search-empty
+)
+
 ; on joue le coup et on demande une réponse au model grace au buffer manual
 (p remember-move-both-diag
 	=goal>
@@ -1395,6 +1429,7 @@
 		x 		   =arg5
 		y 		   =arg6
 		type 	   =arg7
+		- type "lose"
 	?manual>
 		state free
 	=imaginal>
@@ -1426,6 +1461,7 @@
 		x 		   =arg5
 		y 		   =arg6
 		type 	   =arg7
+		- type "lose"
 	?manual>
 		state free
 	=imaginal>
@@ -1457,6 +1493,7 @@
 		x 		   =arg5
 		y 		   =arg6
 		type 	   =arg7
+		- type "lose"
 	?manual>
 		state free
 	=imaginal>
@@ -1488,6 +1525,7 @@
 		x 		   =arg5
 		y 		   =arg6
 		type 	   =arg7
+		- type 	"lose"
 	?manual>
 		state free
 	=imaginal>
@@ -1568,15 +1606,33 @@
 		state finish
 	+manual>
 		cmd press-key
-		key "win"
+		key "w"
 )
 
-(p memorize-lose
+(p memorize-lose-ligne
 	=goal>
 		state "finish"
 		type-move =val
+		goodAnswerLig	=a
 	=imaginal>
 		type nil
+		- x =a
+==>
+	=imaginal>
+		type "lose"
+	-imaginal>
+	=goal>
+		state finish
+)
+
+(p memorize-lose-col
+	=goal>
+		state "finish"
+		type-move =val
+		goodAnswerCol	=b
+	=imaginal>
+		type nil
+		- y =b
 ==>
 	=imaginal>
 		type "lose"
