@@ -949,8 +949,6 @@
         state create-move
         prevLigne 3
         prevCol 3
-        ;currentLigne 3
-        ;currentCol 3
 )
 
 
@@ -964,8 +962,6 @@
     =goal>
         prevLigne 3
         prevCol 3
-        ;currentLigne 3
-        ;currentCol 3
 )
 
 (p create-move
@@ -1268,7 +1264,7 @@
 		state try-remember-move
 )
 
-;essaye de se rappeler d'un coup avec 4 pattern
+;essaye de se rappeler d'un move avec 4 pattern
 (p try-remember-move-both-diag
 	=goal>
 		state try-remember-move
@@ -1293,7 +1289,7 @@
 		state remembering
 )
 
-;essaye de se rappeler d'un coup avec 3 pattern
+;essaye de se rappeler d'un move avec 3 pattern
 (p try-remember-move-only-diag1
 	=goal>
 		state try-remember-move
@@ -1318,7 +1314,7 @@
 		state remembering
 )
 
-;essaye de se rappeler d'un coup avec 3 pattern
+;essaye de se rappeler d'un move avec 3 pattern
 (p try-remember-move-only-diag2
 	=goal>
 		state try-remember-move
@@ -1343,7 +1339,7 @@
 		state remembering
 )
 
-;essaye de se rappeler d'un coup avec 2 pattern
+;essaye de se rappeler d'un move avec 2 pattern
 (p try-remember-move-no-diag
 	=goal>
 		state try-remember-move
@@ -1368,6 +1364,7 @@
 		state remembering
 )
 
+;si on se rappelle pas d'un move on continue à chercher
 (p cannot-remember-move
 	=goal>
 		state remembering
@@ -1379,6 +1376,8 @@
 	-imaginal>
 )
 
+;si on ne se rappelle pas d'un move, on enregistre la position de la premiere case vide
+; et on continue à chercher
 (p cannot-remember-move-first-empty
    =goal>
    		state remembering
@@ -1396,7 +1395,7 @@
 	-imaginal>
 )
 
-;si on se rappelle d'un mauvais coup, on ne fait rien on continue à chercher
+;si on se rappelle d'un mauvais move, on ne fait rien on continue à chercher
 (p remember-bad-move
 	=goal>
 		state remembering
@@ -1408,7 +1407,8 @@
 		state search-empty
 )
 
-; on joue le coup et on demande une réponse au model grace au buffer manual
+; joue le move si on s'en rappelle
+;on demande une réponse au model grace au buffer manual
 (p remember-move-both-diag
 	=goal>
 		state remembering
@@ -1442,6 +1442,7 @@
 )
 
 ;joue le move si on s'en rappelle (uniquement la diagonal 1 dans le move)
+; on demande une réponse au model grace au buffer manual
 (p remember-move-only-diag1
 	=goal>
 		state remembering
@@ -1476,6 +1477,7 @@
 
 
 ;joue le move si on s'en rappelle (uniquement la diagonal 2 dans le move)
+;on demande une réponse au model grace au buffer manual
 (p remember-move-only-diag2
 	=goal>
 		state remembering
@@ -1509,6 +1511,7 @@
 )
 
 ;joue le move si on s'en rappelle (aucunes diagonal dans le move)
+; on demande une réponse au model grace au buffer manual
 (p remember-move-no-diag
 	=goal>
 		state remembering
