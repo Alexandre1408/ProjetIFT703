@@ -582,12 +582,12 @@
                             case1_1 ,(slot-value plateau 'case11)  case1_2 ,(slot-value plateau 'case12) case1_3 ,(slot-value plateau 'case13)
                             case2_1 ,(slot-value plateau 'case21)  case2_2 ,(slot-value plateau 'case22) case2_3 ,(slot-value plateau 'case23)
                             case3_1 ,(slot-value plateau 'case31)  case3_2 ,(slot-value plateau 'case32) case3_3 ,(slot-value plateau 'case33)
-                            currentLigne, 1
-                            currentCol, 1
+                            nextLigne, 1
+                            nextCol, 1
 							firstEmptyLig, nil
 							firstEmptyCol, nil
-							prevLigne, nil
-							prevCol, nil
+							currentLigne, nil
+							currentCol, nil
 							goodAnswerCol, nil
 							goodAnswerLig, nil
 							type-move, nil
@@ -599,12 +599,12 @@
                                 case1_1 ,(slot-value plateau 'case11)  case1_2 ,(slot-value plateau 'case12) case1_3 ,(slot-value plateau 'case13)
                                 case2_1 ,(slot-value plateau 'case21)  case2_2 ,(slot-value plateau 'case22) case2_3 ,(slot-value plateau 'case23)
                                 case3_1 ,(slot-value plateau 'case31)  case3_2 ,(slot-value plateau 'case32) case3_3 ,(slot-value plateau 'case33)
-                                currentLigne, 1
-                                currentCol, 1
+                                nextLigne, 1
+                                nextCol, 1
 								firstEmptyLig, nil
 								firstEmptyCol, nil
-								prevLigne, nil
-								prevCol, nil
+								currentLigne, nil
+								currentCol, nil
 								goodAnswerCol, nil
 								goodAnswerLig, nil
 								type-move, nil
@@ -664,7 +664,7 @@
 )
 
 (chunk-type pattern id case1 case2 case3) 
-(chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3 currentLigne currentCol prevLigne prevCol firstEmptyLig firstEmptyCol goodAnswerLig goodAnswerCol type-move state) 
+(chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3 nextLigne nextCol currentLigne currentCol firstEmptyLig firstEmptyCol goodAnswerLig goodAnswerCol type-move state) 
 (chunk-type learned-move ligne col diag1 diag2 x y type) 
 (declare-buffer-usage goal board-state :all)
 
@@ -707,261 +707,261 @@
 (p test-non-empty1_1
     =goal>
         state search-empty
-        currentLigne 1
-        currentCol 1
+        nextLigne 1
+        nextCol 1
         - case1_1 "E"
 ==>
     =goal>
-        prevLigne 1
-        prevCol 1
         currentLigne 1
-        currentCol 2
+        currentCol 1
+        nextLigne 1
+        nextCol 2
 )
 
 (p test-empty1_1
     =goal>
         state search-empty
-        currentLigne 1
-        currentCol 1
+        nextLigne 1
+        nextCol 1
         case1_1 "E"
 ==>
     =goal>
         state create-move
-        prevLigne 1
-        prevCol 1
         currentLigne 1
-        currentCol 2
+        currentCol 1
+        nextLigne 1
+        nextCol 2
 )
 
 (p test-empty1_2
     =goal>
         state search-empty
-        currentLigne 1
-        currentCol 2
+        nextLigne 1
+        nextCol 2
         case1_2 "E"
 ==>
     =goal>
         state create-move
-        prevLigne 1
-        prevCol 2
         currentLigne 1
-        currentCol 3
+        currentCol 2
+        nextLigne 1
+        nextCol 3
 )
 
 (p test-non-empty1_2
     =goal>
         state search-empty
-        currentLigne 1
-        currentCol 2
+        nextLigne 1
+        nextCol 2
         - case1_2 "E"
 ==>
     =goal>
-        prevLigne 1
-        prevCol 2
         currentLigne 1
-        currentCol 3
+        currentCol 2
+        nextLigne 1
+        nextCol 3
 )
 
 (p test-empty1_3
     =goal>
         state search-empty
-        currentLigne 1
-        currentCol 3
+        nextLigne 1
+        nextCol 3
         case1_3 "E"
 ==>
     =goal>
         state create-move
-        prevLigne 1
-        prevCol 3
-        currentLigne 2
-        currentCol 1
+        currentLigne 1
+        currentCol 3
+        nextLigne 2
+        nextCol 1
 )
 
 (p test-non-empty1_3
     =goal>
         state search-empty
-        currentLigne 1
-        currentCol 3
+        nextLigne 1
+        nextCol 3
         - case1_3 "E"
 ==>
     =goal>
-        prevLigne 1
-        prevCol 3
-        currentLigne 2
-        currentCol 1
+        currentLigne 1
+        currentCol 3
+        nextLigne 2
+        nextCol 1
 )
 
 (p test-empty2_1
     =goal>
         state search-empty
-        currentLigne 2
-        currentCol 1
+        nextLigne 2
+        nextCol 1
         case2_1 "E"
 ==>
     =goal>
         state create-move
-        prevLigne 2
-        prevCol 1
         currentLigne 2
-        currentCol 2
+        currentCol 1
+        nextLigne 2
+        nextCol 2
 )
 
 (p test-non-empty2_1
     =goal>
         state search-empty
-        currentLigne 2
-        currentCol 1
+        nextLigne 2
+        nextCol 1
         - case2_1 "E"
 ==>
     =goal>
-        prevLigne 2
-        prevCol 1
         currentLigne 2
-        currentCol 2
+        currentCol 1
+        nextLigne 2
+        nextCol 2
 )
 
 (p test-empty2_2
     =goal>
         state search-empty
-        currentLigne 2
-        currentCol 2
+        nextLigne 2
+        nextCol 2
         case2_2 "E"
 ==>
     =goal>
         state create-move
-        prevLigne 2
-        prevCol 2
         currentLigne 2
-        currentCol 3
+        currentCol 2
+        nextLigne 2
+        nextCol 3
 )
 
 (p test-non-empty2_2
     =goal>
         state search-empty
-        currentLigne 2
-        currentCol 2
+        nextLigne 2
+        nextCol 2
         - case2_2 "E"
 ==>
     =goal>
-        prevLigne 2
-        prevCol 2
         currentLigne 2
-        currentCol 3
+        currentCol 2
+        nextLigne 2
+        nextCol 3
 )
 
 (p test-empty2_3
     =goal>
         state search-empty
-        currentLigne 2
-        currentCol 3
+        nextLigne 2
+        nextCol 3
         case2_3 "E"
 ==>
     =goal>
         state create-move
-        prevLigne 2
-        prevCol 3
-        currentLigne 3
-        currentCol 1
+        currentLigne 2
+        currentCol 3
+        nextLigne 3
+        nextCol 1
 )
 
 (p test-non-empty2_3
     =goal>
         state search-empty
-        currentLigne 2
-        currentCol 3
+        nextLigne 2
+        nextCol 3
         - case2_3 "E"
 ==>
     =goal>
-        prevLigne 2
-        prevCol 3
-        currentLigne 3
-        currentCol 1
+        currentLigne 2
+        currentCol 3
+        nextLigne 3
+        nextCol 1
 )
 
 (p test-empty3_1
     =goal>
         state search-empty
-        currentLigne 3
-        currentCol 1
+        nextLigne 3
+        nextCol 1
         case3_1 "E"
 ==>
     =goal>
         state create-move
-        prevLigne 3
-        prevCol 1
         currentLigne 3
-        currentCol 2
+        currentCol 1
+        nextLigne 3
+        nextCol 2
 )
 
 
 (p test-non-empty3_1
     =goal>
         state search-empty
-        currentLigne 3
-        currentCol 1
+        nextLigne 3
+        nextCol 1
         - case3_1 "E"
 ==>
     =goal>
-        prevLigne 3
-        prevCol 1
         currentLigne 3
-        currentCol 2
+        currentCol 1
+        nextLigne 3
+        nextCol 2
 )
 
 (p test-empty3_2
     =goal>
         state search-empty
-        currentLigne 3
-        currentCol 2
+        nextLigne 3
+        nextCol 2
         case3_2 "E"
 ==>
     =goal>
         state create-move
-        prevLigne 3
-        prevCol 2
         currentLigne 3
-        currentCol 3
+        currentCol 2
+        nextLigne 3
+        nextCol 3
 )
 
 
 (p test-non-empty3_2
     =goal>
         state search-empty
-        currentLigne 3
-        currentCol 2
+        nextLigne 3
+        nextCol 2
         - case3_2 "E"
 ==>
     =goal>
-        prevLigne 3
-        prevCol 2
         currentLigne 3
-        currentCol 3
+        currentCol 2
+        nextLigne 3
+        nextCol 3
 )
 
 (p test-empty3_3
     =goal>
         state search-empty
-        currentLigne 3
-        currentCol 3
+        nextLigne 3
+        nextCol 3
         case3_3 "E"
 ==>
     =goal>
         state create-move
-        prevLigne 3
-        prevCol 3
+        currentLigne 3
+        currentCol 3
 )
 
 
 (p test-non-empty3_3
     =goal>
         state search-empty
-        currentLigne 3
-        currentCol 3
+        nextLigne 3
+        nextCol 3
         - case3_3 "E"
 ==>
     =goal>
-        prevLigne 3
-        prevCol 3
+        currentLigne 3
+        currentCol 3
 )
 
 (p create-move
@@ -975,7 +975,7 @@
 (p select-line1
    =goal>
 		state select-line
-		prevLigne 1
+		currentLigne 1
 		case1_1 =c1
 		case1_2 =c2
 		case1_3 =c3
@@ -992,7 +992,7 @@
 (p select-line2
    =goal>
 		state select-line
-		prevLigne 2
+		currentLigne 2
 		case2_1 =c1
 		case2_2 =c2
 		case2_3 =c3
@@ -1009,7 +1009,7 @@
 (p select-line3
    =goal>
 		state select-line
-		prevLigne 3
+		currentLigne 3
 		case3_1 =c1
 		case3_2 =c2
 		case3_3 =c3
@@ -1042,7 +1042,7 @@
 (p select-col1
 	=goal>
 		state select-col
-		prevCol 1
+		currentCol 1
 		case1_1 =c1
 		case2_1 =c2
 		case3_1 =c3
@@ -1059,7 +1059,7 @@
 (p select-col2
 	=goal>
 		state select-col
-		prevCol 2
+		currentCol 2
 		case1_2 =c1
 		case2_2 =c2
 		case3_2 =c3
@@ -1076,7 +1076,7 @@
 (p select-col3
 	=goal>
 		state select-col
-		prevCol 3
+		currentCol 3
 		case1_3 =c1
 		case2_3 =c2
 		case3_3 =c3
@@ -1109,8 +1109,8 @@
 (p select-diag1
 	=goal>
 		state select-diag1
-		prevLigne =nb
-		prevCol =nb
+		currentLigne =nb
+		currentCol =nb
 		case1_1 =c1
 		case2_2 =c2
 		case3_3 =c3
@@ -1128,8 +1128,8 @@
 (p no-diag1
     =goal>
         state select-diag1
-        prevLigne =nb
-        - prevCol =nb
+        currentLigne =nb
+        - currentCol =nb
         case1_1 =c1
         case2_2 =c2
         case3_3 =c3
@@ -1158,8 +1158,8 @@
 (p select-diag2_1
 	=goal>
 		state select-diag2
-		prevLigne 1
-		prevCol 3
+		currentLigne 1
+		currentCol 3
 		case1_3 =c1
 		case2_2 =c2
 		case3_1 =c3
@@ -1177,8 +1177,8 @@
 (p select-diag2_2
 	=goal>
 		state select-diag2
-		prevLigne 2
-		prevCol 2
+		currentLigne 2
+		currentCol 2
 		case1_3 =c1
 		case2_2 =c2
 		case3_1 =c3
@@ -1196,8 +1196,8 @@
 (p select-diag2_3
 	=goal>
 		state select-diag2
-		prevLigne 3
-		prevCol 1
+		currentLigne 3
+		currentCol 1
 		case1_3 =c1
 		case2_2 =c2
 		case3_1 =c3
@@ -1215,8 +1215,8 @@
 (p no-diag2_1_3
 	=goal>
 		state select-diag2
-		prevLigne		1
-		- prevCol		3
+		currentLigne		1
+		- currentCol		3
 		
 ==>
 	=goal>
@@ -1227,8 +1227,8 @@
 (p no-diag2_2_3
 	=goal>
 		state select-diag2
-		prevLigne		2
-		- prevCol		2
+		currentLigne		2
+		- currentCol		2
 		
 ==>
 	=goal>
@@ -1239,8 +1239,8 @@
 (p no-diag2_3_3
 	=goal>
 		state select-diag2
-		prevLigne		3
-		- prevCol		1
+		currentLigne		3
+		- currentCol		1
 		
 ==>
 	=goal>
@@ -1268,8 +1268,8 @@
 (p try-remember-move-both-diag
 	=goal>
 		state try-remember-move
-		- currentLigne nil
-		- currentCol nil
+		- nextLigne nil
+		- nextCol nil
 	=imaginal>
 		isa learned-move
 		ligne 	=arg1
@@ -1293,8 +1293,8 @@
 (p try-remember-move-only-diag1
 	=goal>
 		state try-remember-move
-		- currentLigne nil
-		- currentCol nil
+		- nextLigne nil
+		- nextCol nil
 	=imaginal>
 		isa learned-move
 		ligne 	=arg1
@@ -1318,8 +1318,8 @@
 (p try-remember-move-only-diag2
 	=goal>
 		state try-remember-move
-		- currentLigne nil
-		- currentCol nil
+		- nextLigne nil
+		- nextCol nil
 	=imaginal>
 		isa learned-move
 		ligne 	=arg1
@@ -1343,8 +1343,8 @@
 (p try-remember-move-no-diag
 	=goal>
 		state try-remember-move
-		- currentLigne nil
-		- currentCol nil
+		- nextLigne nil
+		- nextCol nil
 	=imaginal>
 		isa learned-move
 		ligne 	=arg1
@@ -1383,8 +1383,8 @@
    		state remembering
 		firstEmptyLig nil
 		firstEmptyCol nil
-		prevLigne =lig
-		prevCol =col
+		currentLigne =lig
+		currentCol =col
 	?retrieval>
 		buffer failure
 ==>
@@ -1548,29 +1548,29 @@
 (p create-default-move
 	=goal>
 		state search-empty
-		prevLigne 3
-		prevCol 3
-	    currentCol  3
-		currentLigne  3
+		currentLigne 3
+		currentCol 3
+	    nextCol  3
+		nextLigne  3
 		firstEmptyLig =val1
 		firstEmptyCol =val2
 	==>
 	=goal>
 		state create-move
-		prevLigne =val1
-		prevCol =val2
-		currentCol nil
-		currentLigne nil
+		currentLigne =val1
+		currentCol =val2
+		nextCol nil
+		nextLigne nil
 )
 
 ; joue le move par défaut
 (p play-default-move
 	=goal>
 		state try-remember-move
-		currentCol nil
-		currentLigne nil
-		prevLigne =val1 ;remplacer par first empty lig et col ? 
-		prevCol   =val2
+		nextCol nil
+		nextLigne nil
+		currentLigne =val1 ;remplacer par first empty lig et col ? 
+		currentCol   =val2
 	=imaginal>
 		x nil
 		y nil
