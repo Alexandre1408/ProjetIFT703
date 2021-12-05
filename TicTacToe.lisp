@@ -28,7 +28,53 @@
 	(setf (slot-value *plateau* 'case33) "E")
 )
 
-(defun tictactoe(loop)
+(defun tictactoe-once(loop)
+	(let( (moyenne 0)
+			(compteur 0)
+			(window (open-exp-window "tic tac toe" :visible nil))
+		)
+		(install-device window)
+		(dotimes (i loop)
+			(setf compteur 0)
+			(let (	(type-move (+ 1 (act-r-random 2)))
+						(coupGagnantLigne (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en ligne
+						(coupGagnantCol (+ 1 (act-r-random 3)))  ; genere la position du coup gagnant en colonne
+					 )
+					(case type-move
+						(1 (createWinBoard coupGagnantLigne coupGagnantCol))
+						(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
+					)
+					
+					(setf *response* nil)
+					
+					(add-act-r-command "response" 'respond-to-key-press)
+					(monitor-act-r-command "output-key" "response")
+					
+					(set-goal *plateau* nil)
+					
+					(if (STRING-EQUAL (car *response*) "a")
+						(progn
+							(setf *response* nil)							
+							(case type-move
+								(1 (response-to-model coupGagnantLigne coupGagnantCol "gagnant" "finish"))
+								(2 (response-to-model coupGagnantLigne coupGagnantCol "bloquant" "finish"))
+							) 
+						)
+					)
+					
+					(if (STRING-EQUAL (car *response*) "w") 
+						(setf compteur (+ compteur 1))
+					)
+
+					(remove-act-r-command-monitor "output-key" "response")
+					(remove-act-r-command "response")
+			)
+		)
+	compteur
+	)
+)
+
+(defun tictactoe-win(loop)
 	(let( (moyenne 0)
 			(compteur 0)
 			(not-win t)
@@ -46,8 +92,6 @@
 						(1 (createWinBoard coupGagnantLigne coupGagnantCol))
 						(2 (createBlockBoard coupGagnantLigne coupGagnantCol))
 					)
-					
-					(drawplateau)
 					
 					(while not-win
 						(setf compteur (+ compteur 1))
@@ -86,7 +130,7 @@
 	(let ( (retour 0)
 			(points))
 		(dotimes (i blocks)
-			(setf retour (tictactoe block-size))
+			(setf retour (tictactoe-win block-size))
 			(push retour points)
 			(format t "Anvancee : ~A%~%" (/ (* i 100) blocks))
 		)
