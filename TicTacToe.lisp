@@ -29,8 +29,7 @@
 )
 
 (defun tictactoe-once(loop)
-	(let( (moyenne 0)
-			(compteur 0)
+	(let( 	(compteur 0)
 			(window (open-exp-window "tic tac toe" :visible nil))
 		)
 		(install-device window)
@@ -135,9 +134,16 @@
 			(format t "Anvancee : ~A%~%" (/ (* i 100) blocks))
 		)
 		(format t "Retour : ~A%~%" points)
-		(draw-graph points)
+		(draw-graph (rev points))
 	)
 )
+
+(defun rev (l)
+	(cond
+		((null l) '())
+		(T (append (rev (cdr l)) (list (car l))))
+	)
+) 
 
 (defun draw-graph (points)
 	(let ((w (open-exp-window "Data" :visible t :width 550 :height 460))
