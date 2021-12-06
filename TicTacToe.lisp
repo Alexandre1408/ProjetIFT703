@@ -695,27 +695,22 @@
     (search-empty isa chunk)
     (create-move isa chunk)
     (select-line isa chunk)
-    (select-col isa chunk)
-    (select-diag isa chunk)
-    (create-col isa chunk)
     (create-ligne isa chunk)
+    (select-col isa chunk)
+    (create-col isa chunk)
 	(select-diag1 isa chunk)
 	(create-diag1 isa chunk)
 	(select-diag2 isa chunk)
 	(create-diag2 isa chunk)
 	(try-remember-move isa chunk)
-	(answer isa chunk)
-	(replace-empty isa chunk)
 	(remembering isa chunk)
-	(win isa chunk)
-	(lose isa chunk)
-	(block isa chunk)
 	(finish isa chunk)
+	(playing isa chunk)
 )
 
 (chunk-type pattern id case1 case2 case3) 
 (chunk-type board-state case1_1 case1_2 case1_3 case2_1 case2_2 case2_3 case3_1 case3_2 case3_3 nextLigne nextCol currentLigne currentCol firstEmptyLig firstEmptyCol goodAnswerLig goodAnswerCol type-move state) 
-(chunk-type learned-move ligne col diag1 diag2 x y type) 
+(chunk-type learned-move ligne col diag1 diag2 type) 
 (declare-buffer-usage goal board-state :all)
 
 (add-dm
@@ -1468,24 +1463,18 @@
 		col        =arg2
 		diag1 	   =arg3
 		diag2 	   =arg4
-		x 		   =arg5
-		y 		   =arg6
-		type 	   =arg7
+		type 	   =arg5
 		- type "lose"
+	=imaginal>
 	?manual>
 		state free
-	=imaginal>
-		x nil
-		y nil
 ==>
 	=imaginal>
 		ligne      =arg1
 		col        =arg2
 		diag1 	   =arg3
 		diag2 	   =arg4
-		x 		   =arg5
-		y 		   =arg6
-		type	   =arg7
+		type	   =arg5
 	+manual>
 		cmd press-key
 		key "a"
@@ -1502,24 +1491,18 @@
 		col        =arg2
 		diag1 	   nil
 		diag2 	   =arg4
-		x 		   =arg5
-		y 		   =arg6
-		type 	   =arg7
+		type 	   =arg5
 		- type "lose"
 	?manual>
 		state free
 	=imaginal>
-		x nil
-		y nil
 ==>
 	=imaginal>
 		ligne      =arg1
 		col        =arg2
 		diag1 	   nil
 		diag2 	   =arg4
-		x 		   =arg5
-		y 		   =arg6
-		type	   =arg7
+		type	   =arg5
 	+manual>
 		cmd press-key
 		key "a"
@@ -1537,24 +1520,18 @@
 		col        =arg2
 		diag1 	   =arg3
 		diag2 	   nil
-		x 		   =arg5
-		y 		   =arg6
-		type 	   =arg7
+		type 	   =arg5
 		- type "lose"
 	?manual>
 		state free
 	=imaginal>
-		x nil
-		y nil
 ==>
 	=imaginal>
 		ligne      =arg1
 		col        =arg2
 		diag1 	   =arg3
 		diag2 	   nil
-		x 		   =arg5
-		y 		   =arg6
-		type	   =arg7
+		type	   =arg5
 	+manual>
 		cmd press-key
 		key "a"
@@ -1571,24 +1548,18 @@
 		col        =arg2
 		diag1 	   nil
 		diag2 	   nil
-		x 		   =arg5
-		y 		   =arg6
-		type 	   =arg7
+		type 	   =arg5
 		- type 	"lose"
 	?manual>
 		state free
 	=imaginal>
-		x nil
-		y nil
 ==>
 	=imaginal>
 		ligne      =arg1
 		col        =arg2
 		diag1 	   nil
 		diag2 	   nil
-		x 		   =arg5
-		y 		   =arg6
-		type	   =arg7
+		type	   =arg5
 	+manual>
 		cmd press-key
 		key "a"
@@ -1619,20 +1590,16 @@
 		state try-remember-move
 		nextCol nil
 		nextLigne nil
-		currentLigne =val1 ;remplacer par first empty lig et col ? 
-		currentCol   =val2
-	=imaginal>
-		x nil
-		y nil
+		firstEmptyLig 	=val1 ;remplacer par first empty lig et col ? 
+		firstEmptyCol   =val2
 	?manual>
 		state free
 ==>
+	=goal>
+		state playing
 	+manual>
 		cmd press-key
 		key "a"
-	=imaginal>
-		x =val1
-		y =val2
 )
 
 ;s'active si le modele gagne en jouant dans le move par défaut
@@ -1642,9 +1609,11 @@
 		type-move =val
 		goodAnswerLig	=a
 		goodAnswerCol 	=b
+		firstEmptyLig   =a
+		firstEmptyCol	=b
+		nextCol nil
+		nextLigne nil
 	=imaginal>
-		x =a
-		y =b
 		type nil
    ?manual>
       state free
@@ -1699,9 +1668,9 @@
 		state "finish"
 		type-move =val
 		goodAnswerLig	=a
+	-	firstEmptyLig	=a
 	=imaginal>
 		type nil
-		- x =a
 ==>
 	=imaginal>
 		type "lose"
@@ -1714,10 +1683,10 @@
 	=goal>
 		state "finish"
 		type-move =val
-		goodAnswerCol	=b
+		goodAnswerCol	=arg1
+	-	firstEmptyCol	=arg1
 	=imaginal>
 		type nil
-		- y =b
 ==>
 	=imaginal>
 		type "lose"
