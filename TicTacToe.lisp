@@ -689,7 +689,7 @@
 
 (define-model tictactoe
 
-(sgp :esc nil :ans 0.1 :bll 0.5  :ncnar nil :pas nil)
+(sgp :esc nil :ans 0.1 :bll 0.5 :rt -2)
 
 (define-chunks 
     (search-empty isa chunk)

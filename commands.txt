@@ -1,0 +1,8 @@
+les commandes d'execution pour lancer le modele via la console ACT-R:
+
+(tictactoe-once 1): execute le modele une seul fois (argument 1). Le modèle joue un unique coup dans le plateau.
+
+(tictactoe-win 1): execute le modele une seul fois (argument 1). Le modèle joue dans 1 même plateau tant qu'il n'a pas gagné
+
+(run-blocks arg1 arg2) : execute arg1 block de taille arg2. C'est (tictactoe-win arg) qui est utilisé pour l'apprentisage
+arg1 et arg2 doivent être numériques
